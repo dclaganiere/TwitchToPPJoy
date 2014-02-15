@@ -1,0 +1,1767 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PPJoyWrapper</name>
+    </assembly>
+    <members>
+        <member name="T:PPJoy.AxisMapping">
+            <summary>
+            An <see cref="T:PPJoy.AxisMapping"/> object represents an axis control that is 
+            defined on a PPJoy joystick <see cref="T:PPJoy.Device"/>.  An <see cref="T:PPJoy.AxisMapping"/> describes the 
+            axis' number (index), the type of axis control defined, and the PPJoy <see cref="T:PPJoy.AxisDataSources">AxisDataSource</see> from which the 
+            <see cref="T:PPJoy.AxisMapping"/> receives the values which it reports to Windows.  
+            </summary>
+            <seealso cref="T:PPJoy.Device"/>
+        </member>
+        <member name="T:PPJoy.Mapping">
+            <summary>
+            <see cref="T:PPJoy.Mapping"/> is the base class for all <see cref="T:PPJoy.Mapping"/> types.
+            A <see cref="T:PPJoy.Mapping"/> represents a control on 
+            a PPJoy Virtual Joystick <see cref="T:PPJoy.Device"/> such as a Point-of-View hat,
+            an axis, or a button.  <see cref="T:PPJoy.Mapping"/>s declare the presence of a
+            specific control, and its position (index) among other controls of the
+            same type on the same <see cref="T:PPJoy.Device"/>.  <see cref="T:PPJoy.Mapping"/>s also define
+            the data sources that feed these virtual controls state information, which, in turn,
+            is reported to Windows and is accessable via DirectInput.  
+            </summary>
+        </member>
+        <member name="M:PPJoy.Mapping.#ctor(System.Int32)">
+            <summary>
+            Creates a new Mapping object.
+            </summary>
+            <param name="controlNumber">an index to use for this control in the collection of all other controls of the same type on the same device.</param>
+        </member>
+        <member name="M:PPJoy.Mapping.#ctor">
+            <summary>
+            Creates a new Mapping object.
+            </summary>
+        </member>
+        <member name="P:PPJoy.Mapping.ControlNumber">
+            <summary>
+            Gets/sets the index to use for this control in the collection 
+            of all other controls of the same type on the same device.
+            </summary>
+        </member>
+        <member name="F:PPJoy.AxisMapping._minDataSource">
+            <seealso cref="P:PPJoy.AxisMapping.MinDataSource"/>
+        </member>
+        <member name="F:PPJoy.AxisMapping._maxDataSource">
+            <seealso cref="P:PPJoy.AxisMapping.MaxDataSource"/>
+        </member>
+        <member name="F:PPJoy.AxisMapping._axisType">
+            <seealso cref="P:PPJoy.AxisMapping.AxisType"/>
+        </member>
+        <member name="M:PPJoy.AxisMapping.#ctor">
+            <summary>
+            Creates a new <see cref="T:PPJoy.AxisMapping"/> object.
+            </summary>
+            <seealso cref="T:PPJoy.Device"/>
+        </member>
+        <member name="M:PPJoy.AxisMapping.#ctor(System.Int32)">
+            <summary>
+            Creates a new <see cref="T:PPJoy.AxisMapping"/> object.
+            </summary>
+            <param name="controlNumber">The zero-based index of this <see cref="T:PPJoy.AxisMapping"/>
+            in the collection of <see cref="T:PPJoy.AxisMapping"/>s defined on the same PPJoy <see cref="T:PPJoy.Device"/>.  
+            For example, the first <see cref="T:PPJoy.AxisMapping"/> in the collection will have a 
+            <paramref name="controlNumber "/> of 0; the second <see cref="T:PPJoy.AxisMapping"/> will 
+            have a <paramref name="controlNumber"/> of 1; and so forth.
+            </param>
+            <seealso cref="P:PPJoy.Mapping.ControlNumber"/>
+            <seealso cref="T:PPJoy.Device"/>
+        </member>
+        <member name="P:PPJoy.AxisMapping.AxisType">
+            <summary>
+            Gets/sets the type of Windows axis that this <see cref="T:PPJoy.AxisMapping"/> will report
+            itself as.
+            </summary>
+            <seealso cref="T:PPJoy.AxisTypes"/>
+        </member>
+        <member name="P:PPJoy.AxisMapping.MinDataSource">
+            <summary>
+             Gets/sets the PPJoy <see cref="T:PPJoy.AxisDataSources">AxisDataSource</see> that this <see cref="T:PPJoy.AxisMapping"/> 
+             will use as the source of the values that it will report to Windows.
+            </summary>
+             <remarks>
+             <para/>When the <see cref="P:PPJoy.AxisMapping.MinDataSource"/> property is set to 
+             a Digital <see cref="T:PPJoy.AxisDataSources">AxisDataSource</see>, 
+             then this <see cref="T:PPJoy.AxisMapping"/> will report its <b>minimum</b>
+             value to Windows whenever the Digital <see cref="T:PPJoy.AxisDataSources">AxisDataSource</see>'s value is 
+             <see langword="true"/>.
+             <para/>When this property is set to an Analog or Reversed <see cref="T:PPJoy.AxisDataSources">AxisDataSource</see>,
+             then this <see cref="T:PPJoy.AxisMapping"/>  will report the value 
+             provided by the Analog or Reversed <see cref="T:PPJoy.AxisDataSources">AxisDataSource</see> assigned to 
+             the <see cref="P:PPJoy.AxisMapping.MinDataSource"/> property, and will ignore any <see cref="T:PPJoy.AxisDataSources">AxisDataSource</see> set in 
+             the <see cref="P:PPJoy.AxisMapping.MaxDataSource"/> property.
+             <para/>
+             <para/>
+             <hr/>
+             <b>Details:</b>
+             PPJoy <see cref="T:PPJoy.AxisMapping"/>s can be driven from either Digital or Analog <see cref="T:PPJoy.AxisDataSources"/>.  
+             <para/>
+             <para/>
+             <b>Digital <see cref="T:PPJoy.AxisDataSources"/>:</b>
+             <para/>
+             If an <see cref="T:PPJoy.AxisMapping"/> is driven by a (pair of) <b>Digital</b> <see cref="T:PPJoy.AxisDataSources"/>, 
+             then the <see cref="T:PPJoy.AxisMapping"/> can only report one of two possible values -- 
+             <b>Minimum</b> and <b>Maximum</b>.
+             How this works is as follows:<para/>
+             If the value of the <b>Digital</b> data source assigned 
+             to the <see cref="T:PPJoy.AxisMapping"/>'s
+             <see cref="P:PPJoy.AxisMapping.MinDataSource"/> property is <see langword="true"/>, 
+             then the <see cref="T:PPJoy.AxisMapping"/> will report its value as being the <b>minimum</b>
+             axis value.  
+             <para/>
+             Alternatively, if the value of the <b>Digital</b> data source
+             assigned to the <see cref="T:PPJoy.AxisMapping"/>'s <b><see cref="P:PPJoy.AxisMapping.MaxDataSource"/></b> property 
+             is <see langword="true"/>, then the <see cref="T:PPJoy.AxisMapping"/> will 
+             report its value as being the <b>maximum</b> axis value.  
+             
+             If <b>both</b> the <see cref="P:PPJoy.AxisMapping.MinDataSource"/> and the <b><see cref="P:PPJoy.AxisMapping.MaxDataSource"/></b>'s 
+             values read the same value (either <see langword="true"/> or <see langword="false"/>, the
+             behavior is undefined.
+             <para/>
+             <b>Note:</b> If the <see cref="P:PPJoy.AxisMapping.MinDataSource"/> property is set to a <b>Digital</b> <see cref="T:PPJoy.AxisDataSources">AxisDataSource</see>, then 
+             the <see cref="P:PPJoy.AxisMapping.MaxDataSource"/> property should also be set to a <b>Digital</b> <see cref="T:PPJoy.AxisDataSources">AxisDataSource</see>.  You cannot
+             set one data source to Digital and the other to Analog, nor should you set the <see cref="P:PPJoy.AxisMapping.MinDataSource"/> property without also setting 
+             the <see cref="P:PPJoy.AxisMapping.MaxDataSource"/> property.
+             <para/>
+             <b>Analog/Reversed <see cref="T:PPJoy.AxisDataSources">AxisDataSource</see>:</b>
+             <para/>
+             If an <see cref="T:PPJoy.AxisMapping"/> is driven by an <b>Analog</b> or 
+             <b>Reversed</b> <see cref="T:PPJoy.AxisDataSources">AxisDataSource</see>, 
+             then the <see cref="T:PPJoy.AxisMapping"/> will report its 
+             value to Windows, based on the value of the underlying Analog or 
+             Reversed <see cref="T:PPJoy.AxisDataSources">AxisDataSource</see> 
+             which is assigned to the <see cref="T:PPJoy.AxisMapping"/>'s
+             <see cref="P:PPJoy.AxisMapping.MinDataSource"/> property.  
+             <para/>
+             For Analog <see cref="T:PPJoy.AxisDataSources">AxisDataSource</see>s, when the 
+             value of the underlying <see cref="T:PPJoy.AxisDataSources">AxisDataSource</see> increases, 
+             the value reported by the <see cref="T:PPJoy.AxisMapping"/> to Windows will increase proportionately.  
+             <para/>
+             For <b>Reversed</b> <see cref="T:PPJoy.AxisDataSources">AxisDataSources</see>, 
+             when the value of the underlying <see cref="T:PPJoy.AxisDataSources">AxisDataSource</see> 
+             <i>decreases</i>, the value reported by the <see cref="T:PPJoy.AxisMapping"/> 
+             to Windows will <i>increase</i> proportionately.
+             <para/>
+             <b>Note:</b> If the <see cref="P:PPJoy.AxisMapping.MinDataSource"/> property is set to an 
+             <b>Analog</b> <see cref="T:PPJoy.AxisDataSources">AxisDataSource</see> or 
+             a <b>Reversed</b> <see cref="T:PPJoy.AxisDataSources">AxisDataSource</see>, 
+             then the value of the <see cref="P:PPJoy.AxisMapping.MaxDataSource"/> property 
+             will be ignored.  
+             </remarks>
+             <seealso cref="P:PPJoy.AxisMapping.MaxDataSource"/> | 
+             <seealso cref="T:PPJoy.AxisDataSources"/>
+        </member>
+        <member name="P:PPJoy.AxisMapping.MaxDataSource">
+            <summary>
+            Gets/sets the PPJoy <see cref="T:PPJoy.AxisDataSources">AxisDataSource</see> that 
+            this <see cref="T:PPJoy.AxisMapping"/> will use as the source of the values that it will report to Windows.  
+            </summary>
+            <remarks>
+            When this property is set to a Digital <see cref="T:PPJoy.AxisDataSources">AxisDataSource</see>, 
+            then this <see cref="T:PPJoy.AxisMapping"/> will report its 
+            <b>maximum</b> value to Windows whenever the Digital <see cref="T:PPJoy.AxisDataSources">AxisDataSource</see>'s value is 
+            <see langword="true"/>.
+            <para/>To use the <see cref="P:PPJoy.AxisMapping.MaxDataSource"/> property, you must first 
+            set the <see cref="P:PPJoy.AxisMapping.MinDataSource"/> property to a 
+            Digital (boolean) <see cref="T:PPJoy.AxisDataSources">AxisDataSource</see>.
+            <para/><b>Note:</b> If the <see cref="P:PPJoy.AxisMapping.MinDataSource"/> property is not set to a 
+            Digital (boolean) <see cref="T:PPJoy.AxisDataSources">AxisDataSource</see>, then 
+            setting the <see cref="P:PPJoy.AxisMapping.MaxDataSource"/> property has no effect.
+            </remarks>
+            <seealso cref="P:PPJoy.AxisMapping.MinDataSource"/>
+            <seealso cref="T:PPJoy.AxisDataSources"/>
+        </member>
+        <member name="T:PPJoy.ButtonMapping">
+            <summary>
+            A <see cref="T:PPJoy.ButtonMapping"/> object represents a button control that is defined 
+            on a PPJoy joystick <see cref="T:PPJoy.Device"/>.  A <see cref="T:PPJoy.ButtonMapping"/> defines the button's
+            number (index) and the <see cref="T:PPJoy.ButtonDataSources">ButtonDataSource</see> that will provide the <see cref="T:PPJoy.ButtonMapping"/>'s state values
+            that it will report to Windows.
+            </summary>
+            <seealso cref="T:PPJoy.Device"/>
+            <seealso cref="T:PPJoy.Mapping"/>
+            <seealso cref="T:PPJoy.ButtonDataSources"/>
+        </member>
+        <member name="F:PPJoy.ButtonMapping._dataSource">
+            <seealso cref="P:PPJoy.ButtonMapping.DataSource"/>
+        </member>
+        <member name="M:PPJoy.ButtonMapping.#ctor">
+            <summary>
+            Creates a new <see cref="T:PPJoy.ButtonMapping"/> object.
+            </summary>
+            <seealso cref="T:PPJoy.Device"/>
+        </member>
+        <member name="M:PPJoy.ButtonMapping.#ctor(System.Int32)">
+            <summary>
+            Creates a new <see cref="T:PPJoy.ButtonMapping"/> object.
+            </summary>
+            <param name="controlNumber">The zero-based index of this <see cref="T:PPJoy.ButtonMapping"/>  
+            in the collection of <see cref="T:PPJoy.ButtonMapping"/>s defined on the same PPJoy <see cref="T:PPJoy.Device"/>.  For example, 
+            the first <see cref="T:PPJoy.ButtonMapping"/> in the collection will have a <paramref name="controlNumber "/> of 0,
+            the second <see cref="T:PPJoy.ButtonMapping"/> will have a <paramref name="controlNumber"/> of 1, and so forth.
+            </param>
+            <seealso cref="P:PPJoy.Mapping.ControlNumber"/>
+            <seealso cref="T:PPJoy.Device"/>
+        </member>
+        <member name="P:PPJoy.ButtonMapping.DataSource">
+            <summary>
+             Gets/sets the PPJoy <see cref="T:PPJoy.ButtonDataSources">ButtonDataSource</see> that this <see cref="T:PPJoy.ButtonMapping"/> will use as the source
+             of the values that it will report to Windows.
+             </summary>
+             <remarks>
+             When this property is set to a <b>Digital </b> <see cref="T:PPJoy.ButtonDataSources">ButtonDataSource</see>, 
+             then this <see cref="T:PPJoy.ButtonMapping"/> will report a value of <b>pressed</b> to Windows 
+             whenever the Digital <see cref="T:PPJoy.ButtonDataSources">ButtonDataSource</see>'s value is <see langword="true"/>.  Similarily,
+             a value of <b>unpressed</b> will be reported, whenever the Digital <see cref="T:PPJoy.ButtonDataSources">ButtonDataSource</see>'s value is <see langword="false"/>.
+             <para/>When this property is set to an <b>Analog-Max </b> <see cref="T:PPJoy.ButtonDataSources">ButtonDataSource</see>, 
+             then this <see cref="T:PPJoy.ButtonMapping"/> will report a value of <b>pressed</b> to Windows 
+             whenever the Analog <see cref="T:PPJoy.ButtonDataSources">ButtonDataSource</see>'s value is at its <b>maximum</b> value.  Similarily,
+             this <see cref="T:PPJoy.ButtonMapping"/> will report a value of <b>unpressed</b> to Windows whenever the Analog <see cref="T:PPJoy.ButtonDataSources">ButtonDataSource</see>'s value is at 
+             any other value other than its <b>maximum</b>.
+             <para/>When this property is set to an <b>Analog-Min </b> <see cref="T:PPJoy.ButtonDataSources">ButtonDataSource</see>, 
+             then this <see cref="T:PPJoy.ButtonMapping"/> will report a value of <b>pressed</b> to Windows 
+             whenever the Analog <see cref="T:PPJoy.ButtonDataSources">ButtonDataSource</see>'s value is at its <b>minimum</b>.  Similarily, 
+             this <see cref="T:PPJoy.ButtonMapping"/> will report a value of <b>unpressed</b> to Windows whenever the Analog <see cref="T:PPJoy.ButtonDataSources">ButtonDataSource</see>'s value is at 
+             any other value other than its <b>minimum</b>.
+             </remarks>
+             <seealso cref="T:PPJoy.ButtonDataSources"/>
+             <seealso cref="T:PPJoy.ButtonMapping"/>
+             <seealso cref="T:PPJoy.Mapping"/>
+             <seealso cref="T:PPJoy.Device"/>
+        </member>
+        <member name="T:PPJoy.ContinuousPovMapping">
+             <summary>A <see cref="T:PPJoy.ContinuousPovMapping"/> object represents 
+             a specific type of Point-of-View (Pov) control that can 
+             be defined on a PPJoy joystick <see cref="T:PPJoy.Device"/>. 
+             A <see cref="T:PPJoy.ContinuousPovMapping"/> defines the Pov's
+             number (index) and the <see cref="T:PPJoy.ContinuousPovDataSources">ContinuousPovDataSource</see> 
+             that will provide the <see cref="T:PPJoy.ContinuousPovMapping"/>'s state values that it will report to Windows.
+             </summary>
+             <remarks>A <see cref="T:PPJoy.ContinuousPovMapping"/> sources its values from a single 
+             Analog or Reversed <see cref="T:PPJoy.ContinuousPovDataSources">ContinuousPovDataSource</see>.
+             <para/><i>Contrast this behavior with that of a <see cref="T:PPJoy.DirectionalPovMapping"/> control,
+             which sources its values from a set of Digital <see cref="T:PPJoy.DirectionalPovDataSources"/>.</i>
+            </remarks>
+             <seealso cref="T:PPJoy.ContinuousPovDataSources"/>
+             <seealso cref="T:PPJoy.DirectionalPovMapping"/>
+             <seealso cref="T:PPJoy.DirectionalPovDataSources"/> 
+             <seealso cref="T:PPJoy.PovMapping"/>
+             <seealso cref="T:PPJoy.Device"/>
+        </member>
+        <member name="T:PPJoy.PovMapping">
+            <summary>
+            <see cref="T:PPJoy.PovMapping"/> is the base class for all <see cref="T:PPJoy.PovMapping"/> types.  
+            A <see cref="T:PPJoy.PovMapping"/> is a type of <see cref="T:PPJoy.Mapping"/> that declares and
+            defines a Point-of-View control on a PPJoy Virtual Joystick <see cref="T:PPJoy.Device"/>.
+            </summary>
+            <seealso cref="T:PPJoy.Mapping"/>
+        </member>
+        <member name="M:PPJoy.PovMapping.#ctor">
+            <summary>
+            Creates a new <see cref="T:PPJoy.PovMapping"/> object.
+            </summary>
+            <seealso cref="T:PPJoy.Mapping"/>
+        </member>
+        <member name="M:PPJoy.PovMapping.#ctor(System.Int32)">
+            <summary>
+            Creates a new <see cref="T:PPJoy.PovMapping"/> object.
+            </summary>
+            <param name="controlNumber">The zero-based index of this <see cref="T:PPJoy.PovMapping"/> 
+            in the collection of <see cref="T:PPJoy.PovMapping"/>s defined on a single PPJoy <see cref="T:PPJoy.Device"/>.  
+            For example, the first <see cref="T:PPJoy.PovMapping"/> in the collection will have a <paramref name="controlNumber "/> of 0,
+            the second <see cref="T:PPJoy.PovMapping"/> will have a <paramref name="controlNumber"/> of 1, and so forth.
+            </param>
+            <seealso cref="T:PPJoy.Mapping"/>
+            <seealso cref="P:PPJoy.Mapping.ControlNumber"/>
+        </member>
+        <member name="F:PPJoy.ContinuousPovMapping._dataSource">
+            <seealso cref="P:PPJoy.ContinuousPovMapping.DataSource"/>
+        </member>
+        <member name="M:PPJoy.ContinuousPovMapping.#ctor">
+            <summary>
+            Creates a new <see cref="T:PPJoy.ContinuousPovMapping"/> object.
+            </summary>
+            <seealso cref="T:PPJoy.PovMapping"/>
+        </member>
+        <member name="M:PPJoy.ContinuousPovMapping.#ctor(System.Int32)">
+            <summary>
+            Creates a new <see cref="T:PPJoy.ContinuousPovMapping"/> object.
+            </summary>
+            <param name="controlNumber">The zero-based index of this <see cref="T:PPJoy.PovMapping"/>
+            in the collection of <see cref="T:PPJoy.PovMapping"/>s defined on the same PPJoy <see cref="T:PPJoy.Device"/>.  
+            For example, the first <see cref="T:PPJoy.PovMapping"/> in the collection 
+            will have a <paramref name="controlNumber "/> of 0,
+            the second <see cref="T:PPJoy.PovMapping"/> will have a 
+            <paramref name="controlNumber"/> of 1, and so forth.
+            </param>
+            <seealso cref="P:PPJoy.Mapping.ControlNumber"/>
+            <seealso cref="T:PPJoy.PovMapping"/>
+        </member>
+        <member name="P:PPJoy.ContinuousPovMapping.DataSource">
+            <summary>
+             Gets/sets the PPJoy <see cref="T:PPJoy.ContinuousPovDataSources">ContinuousPovDataSource</see> that this <see cref="T:PPJoy.PovMapping"/> will use as the source
+             of the values that it will report to Windows.
+             </summary>
+             <remarks>
+             When an <b>Analog </b> <see cref="T:PPJoy.ContinuousPovDataSources">ContinuousPovDataSource</see> is assigned, then, as the 
+             <see cref="T:PPJoy.ContinuousPovDataSources">ContinuousPovDataSource</see>'s value increases, the values reported to 
+             Windows by this <see cref="T:PPJoy.PovMapping"/> will increase proportionately, proceeding 
+             clock-wise from <b>North</b>.
+             <para/>When a <b>Reversed </b> <see cref="T:PPJoy.ContinuousPovDataSources">ContinuousPovDataSource</see> is assigned, 
+             the value of the Reversed <see cref="T:PPJoy.ContinuousPovDataSources">ContinuousPovDataSource</see> itself 
+             will <i>decrease</i> as the value of the corresponding 
+             Analog <see cref="T:PPJoy.ContinuousPovDataSources">ContinuousPovDataSource</see>
+             <i> increases</i>. This, in turn, means that the value reported 
+             to Windows by this <see cref="T:PPJoy.PovMapping"/> will 
+             <i>decrease</i>, as the value of the corresponding Analog <see cref="T:PPJoy.ContinuousPovDataSources">ContinuousPovDataSource</see> 
+             <i> increases.</i>
+             <para/><b>Note:</b> When the assigned <see cref="T:PPJoy.ContinuousPovDataSources">ContinuousPovDataSource</see>'s 
+             value is set to -1, this <see cref="T:PPJoy.PovMapping"/> will report its 
+             position as <b>centered</b>.
+             </remarks>
+             <seealso cref="T:PPJoy.ContinuousPovDataSources"/>
+             <seealso cref="T:PPJoy.PovMapping"/>
+        </member>
+        <member name="T:PPJoy.Device">
+            <summary>
+            A <see cref="T:PPJoy.Device"/> <b> object</b> (an <i>instance</i> of the <see cref="T:PPJoy.Device"/> <b> class</b>) 
+            represents a single PPJoy joystick <see cref="T:PPJoy.Device"/>.  
+            </summary>
+        </member>
+        <member name="F:PPJoy.Device._joyType">
+            <seealso cref="T:PPJoy.JoystickTypes"/>
+        </member>
+        <member name="F:PPJoy.Device._subType">
+            <seealso cref="T:PPJoy.JoystickSubTypes"/>
+        </member>
+        <member name="F:PPJoy.Device._productId">
+            <seealso cref="P:PPJoy.Device.ProductId"/>
+        </member>
+        <member name="F:PPJoy.Device._vendorId">
+            <seealso cref="P:PPJoy.Device.VendorId"/>
+        </member>
+        <member name="F:PPJoy.Device._unitNum">
+            <seealso cref="P:PPJoy.Device.UnitNum"/>
+        </member>
+        <member name="F:PPJoy.Device._lptNum">
+            <seealso cref="P:PPJoy.Device.LptNum"/>
+        </member>
+        <member name="M:PPJoy.Device.#ctor">
+            <summary>
+            Private default constructor and internal non-default constructor(s) makes creating new device objects impossible without using <see cref="T:PPJoy.DeviceManager">DeviceManager</see>'s factory methods
+            </summary>
+        </member>
+        <member name="M:PPJoy.Device.#ctor(System.Int32,PPJoy.JoystickTypes,PPJoy.JoystickSubTypes,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Creates a new instance of a <see cref="T:PPJoy.Device"/> object that can manage a single PPJoy virtual device.
+            </summary>
+            <param name="lptNum">LPT number that the device is attached to.
+            A value of Zero specifies a virtual device.</param>
+            <param name="type"><see cref="T:PPJoy.JoystickTypes">JoystickType</see> of the device.</param>
+            <param name="subType"><see cref="T:PPJoy.JoystickSubTypes">JoystickSubType</see> of this device.</param>
+            <param name="productId">Product ID associated with the device.</param>
+            <param name="vendorId">Vendor ID associated with the device.</param>
+            <param name="unitNum">Unit number of the device.</param>
+        </member>
+        <member name="M:PPJoy.Device.GetMappings">
+            <summary>
+            Gets a <see cref="T:PPJoy.MappingCollection"/> representing the controls defined 
+            on this <see cref="T:PPJoy.Device"/>.
+            </summary>
+            <returns>A <see cref="T:PPJoy.MappingCollection"/> object
+            representing the controls defined directly on this <see cref="T:PPJoy.Device"/>.</returns>
+            <seealso cref="T:PPJoy.Mapping"/>
+            <seealso cref="T:PPJoy.MappingCollection"/>
+        </member>
+        <member name="M:PPJoy.Device.GetMappings(PPJoy.JoystickMapScope)">
+            <summary>
+            Gets a <see cref="T:PPJoy.MappingCollection"/> representing the controls 
+            defined on this <see cref="T:PPJoy.Device"/>, or representing the controls
+            defined in this <see cref="T:PPJoy.Device"/>'s interface.
+            </summary>
+            <param name="scope">Scope from which to retrive the <see cref="T:PPJoy.MappingCollection"/>.</param>
+            <returns>If the <paramref name="scope"/> argument is set to 
+            <see cref="F:PPJoy.JoystickMapScope.Interface"/>, then this method returns 
+            a <see cref="T:PPJoy.MappingCollection"/> object 
+            representing the controls defined in this <see cref="T:PPJoy.Device"/>'s 
+            interface. 
+            <para/>
+            If the <paramref name="scope"/> argument is set to 
+            <see cref="F:PPJoy.JoystickMapScope.Device"/>, then this method returns 
+            a <see cref="T:PPJoy.MappingCollection"/> object 
+            representing the controls defined directly on this <see cref="T:PPJoy.Device"/> itself. 
+            </returns>
+            <seealso cref="T:PPJoy.Mapping"/>
+            <seealso cref="T:PPJoy.MappingCollection"/>
+            <seealso cref="T:PPJoy.JoystickMapScope"/>
+        </member>
+        <member name="M:PPJoy.Device.RemoveMappings">
+            <summary>
+            Removes the custom-defined <see cref="T:PPJoy.Mapping"/>s from this <see cref="T:PPJoy.Device"/>, without affecting the <see cref="T:PPJoy.Mapping"/>s defined in the <see cref="T:PPJoy.Device"/>'s interface.
+            </summary>
+            <seealso cref="T:PPJoy.JoystickMapScope"/>
+            <seealso cref="T:PPJoy.MappingCollection"/>
+            <seealso cref="T:PPJoy.Mapping"/>
+        </member>
+        <member name="M:PPJoy.Device.RemoveMappings(PPJoy.JoystickMapScope)">
+            <summary>
+            Removes the custom-defined <see cref="T:PPJoy.Mapping"/>s from this <see cref="T:PPJoy.Device"/> 
+            OR from its interface.
+            </summary>
+            <param name="scope">The <see cref="T:PPJoy.JoystickMapScope"/> from which to remove all custom-defined <see cref="T:PPJoy.Mapping"/>s.</param>
+            <seealso cref="T:PPJoy.MappingCollection"/>
+            <seealso cref="T:PPJoy.Mapping"/>
+            <seealso cref="T:PPJoy.JoystickMapScope"/>
+        </member>
+        <member name="M:PPJoy.Device.SetMappings(PPJoy.MappingCollection)">
+            <summary>
+            Associates a set of <see cref="T:PPJoy.Mapping"/>s (a <see cref="T:PPJoy.MappingCollection"/>) with a specific PPJoy <see cref="T:PPJoy.Device"/>.
+            </summary>
+            <param name="newMappings">A <see cref="T:PPJoy.MappingCollection"/> object 
+            containing the new <see cref="T:PPJoy.Mapping"/>s to associate with 
+            the <see cref="T:PPJoy.Device"/>.</param>
+            <seealso cref="T:PPJoy.MappingCollection"/>
+            <seealso cref="T:PPJoy.Mapping"/>
+            <seealso cref="T:PPJoy.JoystickMapScope"/>
+        </member>
+        <member name="M:PPJoy.Device.SetMappings(PPJoy.JoystickMapScope,PPJoy.MappingCollection)">
+            <summary>
+            Associates a set of <see cref="T:PPJoy.Mapping"/>s (a <see cref="T:PPJoy.MappingCollection"/>) with a specific PPJoy <see cref="T:PPJoy.Device"/> in a specific <see cref="T:PPJoy.JoystickMapScope"/>.
+            </summary>
+            <param name="scope">The <see cref="T:PPJoy.JoystickMapScope"/> 
+            in which to store the new custom <see cref="T:PPJoy.Mapping"/>s.</param>
+            <param name="newMappings">A <see cref="T:PPJoy.MappingCollection"/> object 
+            containing the new <see cref="T:PPJoy.Mapping"/>s to associate with 
+            the specified <paramref name="scope"/>.</param>
+            <seealso cref="T:PPJoy.MappingCollection"/>
+            <seealso cref="T:PPJoy.Mapping"/>
+            <seealso cref="T:PPJoy.JoystickMapScope"/>
+        </member>
+        <member name="M:PPJoy.Device.Delete(System.Boolean,System.Boolean)">
+            <summary>
+            Deletes this <see cref="T:PPJoy.Device"/> from PPJoy.
+            </summary>
+            <param name="removeDirectInput">If <see langword="true"/>, 
+            this <see cref="T:PPJoy.Device"/>'s registration will be removed
+            from DirectInput.  If <see langword="false"/>, the <see cref="T:PPJoy.Device"/>'s 
+            DirectInput registration will not be removed.</param>
+            <param name="removeDriver">If <see langword="true"/>, the <see cref="T:PPJoy.Device"/>'s
+            drivers will be unregistered from the system.  If <see langword="false"/>, 
+            the <see cref="T:PPJoy.Device"/>'s drivers will not be unregistered from the system.</param>
+        </member>
+        <member name="M:PPJoy.Device.SetSubtype(PPJoy.JoystickSubTypes)">
+            <summary>
+            Sets the subtype of this device.
+            </summary>
+            <param name="subType">a value from the JoystickSubTypes enumeration, indicating the desired subtype that this device should have</param>
+        </member>
+        <member name="M:PPJoy.Device.SetUnitNumber(System.Int32)">
+            <summary>
+            Sets the Unit Number of this device.  The first device 
+            on a given LPT port should have Unit number = 0; the next
+            device on the same port would be Unit number = 1, and so on.
+            </summary>
+            <param name="value">an integer specifying the unit number to associate with this device.</param>
+        </member>
+        <member name="P:PPJoy.Device.SubType">
+            <summary>
+            Gets the <see cref="T:PPJoy.JoystickSubTypes">JoystickSubType</see> of this <see cref="T:PPJoy.Device"/>.
+            </summary>
+        </member>
+        <member name="P:PPJoy.Device.DeviceType">
+            <summary>
+            Gets the <see cref="T:PPJoy.JoystickTypes">JoystickType</see> of this <see cref="T:PPJoy.Device"/>.
+            </summary>
+        </member>
+        <member name="P:PPJoy.Device.UnitNum">
+            <summary>
+            Gets the unit number of this <see cref="T:PPJoy.Device"/>.
+            </summary>
+        </member>
+        <member name="P:PPJoy.Device.LptNum">
+             <summary>
+             Gets the LPT number of this <see cref="T:PPJoy.Device"/>.  
+             </summary>
+             <remarks>        
+             Virtual joystick <see cref="T:PPJoy.Device"/>s will
+             have <paramref name="LptNum"/> = 0.
+            </remarks>
+        </member>
+        <member name="P:PPJoy.Device.ProductId">
+            <summary>
+            Gets the Product ID associated with this <see cref="T:PPJoy.Device"/>.
+            </summary>
+        </member>
+        <member name="P:PPJoy.Device.VendorId">
+            <summary>
+            Gets the Vendor ID associated with this <see cref="T:PPJoy.Device"/>.
+            </summary>
+        </member>
+        <member name="T:PPJoy.DeviceAlreadyExistsException">
+            <summary>
+            Represents an error that occurs when trying to create a PPJoy <see cref="T:PPJoy.Device"/> that already exists.
+            </summary>
+        </member>
+        <member name="T:PPJoy.PPJoyException">
+            <summary>
+            <see cref="T:PPJoy.PPJoyException"/> is the base class <see cref="T:System.Exception">Exception</see> for all custom <see cref="T:System.Exception">Exception</see>s that occur within the PPJoy wrapper.
+            </summary>
+        </member>
+        <member name="M:PPJoy.PPJoyException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:PPJoy.PPJoyException"/> class.
+            </summary>
+        </member>
+        <member name="M:PPJoy.PPJoyException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:PPJoy.PPJoyException"/> class.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+        </member>
+        <member name="M:PPJoy.PPJoyException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:PPJoy.PPJoyException"/> class.
+            </summary>
+            <param name="message">The error message that explains the reason for the <see cref="T:System.Exception">Exception</see>.</param>
+            <param name="inner">The <see cref="T:System.Exception"/> that is the cause of the current <see cref="T:System.Exception">Exception</see>, or <see langword="null"/> if no inner <see cref="T:System.Exception">Exception</see> is specified.</param>
+        </member>
+        <member name="M:PPJoy.PPJoyException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:PPJoy.PPJoyException"/> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the <see cref="T:System.Exception">Exception</see> being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
+        </member>
+        <member name="M:PPJoy.DeviceAlreadyExistsException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:PPJoy.DeviceAlreadyExistsException"/> class.
+            </summary>
+        </member>
+        <member name="M:PPJoy.DeviceAlreadyExistsException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:PPJoy.DeviceAlreadyExistsException"/> class.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+        </member>
+        <member name="M:PPJoy.DeviceAlreadyExistsException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:PPJoy.DeviceAlreadyExistsException"/> class.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+            <param name="inner">The exception that is the cause of the current exception, or <see langword="null"/> if no inner exception is specified.</param>
+        </member>
+        <member name="M:PPJoy.DeviceAlreadyExistsException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:PPJoy.DeviceAlreadyExistsException"/> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the <see cref="T:System.Exception"/> being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
+        </member>
+        <member name="T:PPJoy.DeviceManager">
+            <summary>
+            Provides methods for creating, retrieving, deleting, and managing details of PPJoy <see cref="T:PPJoy.Device">Device</see> objects.
+            </summary>
+        </member>
+        <member name="M:PPJoy.DeviceManager.#ctor">
+            <summary>
+            Creates an instance of the <see cref="T:PPJoy.DeviceManager">DeviceManager</see> class which can manage 
+            PPJoy <see cref="T:PPJoy.Device">Device</see>s. 
+            </summary>
+        </member>
+        <member name="M:PPJoy.DeviceManager.CreateDevice(System.Int32,PPJoy.JoystickTypes,PPJoy.JoystickSubTypes,System.Int32)">
+            <summary>Creates and registers a new joystick <see cref="T:PPJoy.Device"/> with PPJoy.</summary>
+            <param name="lptNum">LPT number of the <see cref="T:PPJoy.Device"/> to create/register.</param>
+            <param name="joystickType"><see cref="T:PPJoy.JoystickTypes">JoystickType</see> of the <see cref="T:PPJoy.Device"/> to create/register.</param>
+            <param name="subType"><see cref="T:PPJoy.JoystickSubTypes">JoystickSubType</see> of the <see cref="T:PPJoy.Device"/> to create/register.</param>
+            <param name="unitNum">Unit number of the <see cref="T:PPJoy.Device"/> to create/register.</param>
+        </member>
+        <member name="M:PPJoy.DeviceManager.MaxValidUnitNumber(PPJoy.JoystickTypes)">
+            <summary>
+            Gets the maximum valid unit number for a given joystick type.
+            </summary>
+            <param name="joystickType">Joystick type to determine the maximum valid unit number for.</param>
+            <returns>The maximum valid unit number for the specified joystick type.</returns>
+        </member>
+        <member name="M:PPJoy.DeviceManager.GetDevice(System.Int32,System.Int32)">
+            <summary>
+            Retrieves a <see cref="T:PPJoy.Device"/> object that matches the 
+            specified query parameters.  
+            </summary>
+            <param name="lptNum">LPT Port number of the <see cref="T:PPJoy.Device"/> to retrieve; set to 0 for Virtual Joystick <see cref="T:PPJoy.Device"/>s.</param>
+            <param name="unitNum">Unit number of the <see cref="T:PPJoy.Device"/> to retrieve.</param>
+            <returns>A <see cref="T:PPJoy.Device"/> object matching the search criteria, or <see langword="null"/>, if no matching <see cref="T:PPJoy.Device"/> is found.</returns>
+        </member>
+        <member name="M:PPJoy.DeviceManager.DeleteAllDevices(System.Boolean,System.Boolean)">
+            <summary>
+            Deletes all registered PPJoy joystick <see cref="T:PPJoy.Device"/>s.
+            </summary>
+            <param name="removeDirectInput">If <see langword="true"/>, 
+            each <see cref="T:PPJoy.Device"/>'s registration will be removed
+            from DirectInput.  If <see langword="false"/>, no <see cref="T:PPJoy.Device"/>'s 
+            DirectInput registration will be removed.</param>
+            <param name="removeDriver">If <see langword="true"/>, each <see cref="T:PPJoy.Device"/>'s
+            drivers will be unregistered from the system.  If <see langword="false"/>, 
+            no <see cref="T:PPJoy.Device"/>'s drivers will be unregistered from the system.</param>
+        </member>
+        <member name="M:PPJoy.DeviceManager.GetAllDevices">
+            <summary>
+            Enumerates all defined PPJoy <see cref="T:PPJoy.Device"/>s.
+            </summary>
+            <returns>An array of <see cref="T:PPJoy.Device"/> objects, where each element 
+            in the array represents a single defined PPJoy <see cref="T:PPJoy.Device"/>.</returns>
+        </member>
+        <member name="M:PPJoy.DeviceManager.DeleteDevice(PPJoy.Device,System.Boolean,System.Boolean)">
+            <summary>
+            Deletes a <see cref="T:PPJoy.Device"/> from PPJoy.
+            </summary>
+            <param name="device">a <see cref="T:PPJoy.Device">Device</see> to delete from PPJoy.</param>
+            <param name="removeDirectInput">If <see langword="true"/>, 
+            the <see cref="T:PPJoy.Device"/>'s registration will be removed
+            from DirectInput.  If <see langword="false"/>, the <see cref="T:PPJoy.Device"/>'s 
+            DirectInput registration will not be removed.</param>
+            <param name="removeDriver">If <see langword="true"/>, the <see cref="T:PPJoy.Device"/>'s
+            drivers will be unregistered from the system.  If <see langword="false"/>, 
+            the <see cref="T:PPJoy.Device"/>'s drivers will not be unregistered from the system.</param>
+        </member>
+        <member name="M:PPJoy.DeviceManager.IsVirtualDevice(System.Int32)">
+            <summary>
+            Checks whether a given integer containing a VendorID/ProductID
+            combination (typically obtained from DirectInput) refers to a virtual 
+            <see cref="T:PPJoy.Device"/> or a physical <see cref="T:PPJoy.Device"/>.  
+            </summary>
+            <param name="vendorIdentityProductId">A 32-bit integer containing
+            a VendorID (in the high 16 bits) and a Product ID 
+            (in the low 16 bits), indicating a particular <see cref="T:PPJoy.Device"/> on the system.
+            </param>
+            <returns><see langword="true"/>, if the <see cref="T:PPJoy.Device"/> matching
+            the specified <paramref name="vendorIdentityProductId"/> 
+            is a PPJoy virtual <see cref="T:PPJoy.Device"/>, or <see langword="false"/> 
+            if it is a physical <see cref="T:PPJoy.Device"/>.</returns>
+        </member>
+        <member name="M:PPJoy.DeviceManager.GetDeviceByProductId(System.Int32)">
+            <summary>
+            Gets a <see cref="T:PPJoy.Device"/> object representing the PPJoy device 
+            whose product ID matches the supplied Product ID.
+            </summary>
+            <param name="productId">The Product ID of the <see cref="T:PPJoy.Device"/> to return.</param>
+            <returns>a <see cref="T:PPJoy.Device"/> object representing the PPJoy device whose Product ID matches the value supplied in the <paramref name="productId"/> argument.</returns>
+        </member>
+        <member name="M:PPJoy.DeviceManager.GetFileHandle(System.String)">
+            <summary>
+            Gets a new managed <see cref="T:Microsoft.Win32.SafeHandles.SafeFileHandle"/> object, 
+            wrapping a Win32 API file handle, using the standard access 
+            methods and modes required by PPJoy's IOCTL interface.
+            </summary>
+            <param name="devName">The Win32 device name to read from/write to.</param>
+            <returns>a managed <see cref="T:Microsoft.Win32.SafeHandles.SafeFileHandle"/> object 
+            representing a Win3 API file handle.</returns>
+        </member>
+        <member name="M:PPJoy.DeviceManager.CloseFileHandle(Microsoft.Win32.SafeHandles.SafeFileHandle)">
+            <summary>
+            Closes a <see cref="T:Microsoft.Win32.SafeHandles.SafeFileHandle"/> object.
+            </summary>
+            <param name="hFileHandle">a <see cref="T:Microsoft.Win32.SafeHandles.SafeFileHandle"/> object to close.</param>
+        </member>
+        <member name="M:PPJoy.DeviceManager.IsSubTypeValidGivenJoystickType(PPJoy.JoystickTypes,PPJoy.JoystickSubTypes)">
+            <summary>
+            Checks whether a given <see cref="T:PPJoy.JoystickSubTypes"/> value is valid 
+            in combination with a given <see cref="T:PPJoy.JoystickTypes"/> value.
+            </summary>
+            <param name="joystickType">A <see cref="T:PPJoy.JoystickTypes">JoystickType</see> 
+            to validate in combination with the <paramref name="subType"/> 
+            argument.</param>
+            <param name="subType">A <see cref="T:PPJoy.JoystickSubTypes">JoystickSubType</see> 
+            to validate in combination with the <paramref name="joystickType"/> argument.</param>
+            <returns><see langword="true"/>, if the combination is valid, or <see langword="false"/> 
+            if it is not a valid combination.</returns>
+            <seealso cref="T:PPJoy.JoystickTypes"/>
+            <seealso cref="T:PPJoy.JoystickSubTypes"/>
+        </member>
+        <member name="M:PPJoy.DeviceManager.GetDeviceMappings(System.Int32,PPJoy.JoystickTypes,System.Int32,PPJoy.JoystickMapScope)">
+            <summary>
+            Gets a MappingCollection representing the controls mappings associated with a defined PPJoy device.
+            </summary>
+            <param name="lptNum">LPT number of the joystick whose mappings will be returned.</param>
+            <param name="joystickType">Type of joystick whose mappings will be returned.</param>
+            <param name="unitNum">Unit number of the device of the given type whose mappings will be returned.</param>
+            <param name="scope">Scope to return mappings from.</param>
+            <returns>a MappingCollection object, where each element in the collection represents a single control mapping.</returns>
+        </member>
+        <member name="M:PPJoy.DeviceManager.SetDeviceMappings(System.Int32,PPJoy.JoystickTypes,System.Int32,PPJoy.JoystickMapHeader)">
+            <summary>
+            Sets the mappings for a specific PPJoy device.
+            </summary>
+            <param name="lptNum">The LPT number of the device whose mappings will be set to the newly-supplied mappings.</param>
+            <param name="joystickType">The type of device whose mappings will be set to the newly-supplied mappings.</param>
+            <param name="unitNum">The unit number of the device whose mappings will be set.</param>
+            <param name="header">A JoystickMapHeader object containing the new mappings to associate with this device or interface.</param>
+        </member>
+        <member name="M:PPJoy.DeviceManager.SetDeviceMappings(System.Int32,PPJoy.JoystickTypes,System.Int32,PPJoy.JoystickMapScope,PPJoy.MappingCollection)">
+            <summary>
+            Sets the mappings for a specific PPJoy device.
+            </summary>
+            <param name="lptNum">The LPT number of the device whose mappings will be set to the newly-supplied mappings.</param>
+            <param name="joystickType">The type of device whose mappings will be set to the newly-supplied mappings.</param>
+            <param name="unitNum">The unit number of the device whose mappings will be set.</param>
+            <param name="scope">The scope in which to set the new mappings -- either for the device instance itself, or for the device's interface defaults for all devices of the same type that do not override those defaults.</param>
+            <param name="newMappings">A MappingCollection object containing the new mappings to associate with this device or interface.</param>
+        </member>
+        <member name="M:PPJoy.DeviceManager.RemoveDeviceMappings(System.Int32,PPJoy.JoystickTypes,System.Int32,PPJoy.JoystickMapScope)">
+            <summary>
+            Removes the mappings from a specific PPJoy device or the default mappings from its interface.
+            </summary>
+            <param name="lptNum">The LPT number of the device whose mappings or whose interface's mappings will be removed.</param>
+            <param name="joystickType">The type of the device whose mappings or whose interface's mappings will be removed.</param>
+            <param name="unitNum">The unit number of the device whose mappings or whose interface's mappings will be removed.</param>
+            <param name="scope">the scope of the mappings to remove (the device's, or the device's interface's default mappings.</param>
+        </member>
+        <member name="M:PPJoy.DeviceManager.GetRawMappings(System.Int32,PPJoy.JoystickTypes,System.Int32,PPJoy.JoystickMapScope)">
+            <summary>
+            Reads the current mappings from a specific PPJoy device.
+            </summary>
+            <param name="lptNum">the LPT number of the joystick to read from.</param>
+            <param name="joystickType">a value from the JoystickTypes enumeration, 
+            describing the type of joystick to read from.</param>
+            <param name="unitNum">an integer specifying the unit number of the 
+            joystick to read from.</param>
+            <param name="scope">a value from the JoystickMapScope enumeration 
+            indicating the scope of the mappings to return.</param>
+            <returns>a JoystickMapPayload structure, containing raw mapping
+            data, as returned from a direct call to PPJoy's IOCTL interface.</returns>
+        </member>
+        <member name="M:PPJoy.DeviceManager.GetNextFreeProductId">
+            <summary>
+            Gets the next available Product ID on the PPJoy bus,
+            by examining the currently-used Product IDs, in order,
+            until a free one is found. 
+            </summary>
+            <returns>the next available Product ID on the PPJoy bus, or zero, 
+            if an available product ID cannot be found.</returns>
+            <remarks>
+            <b>Note:</b> The first free
+            ID can be in the middle between two used IDs.</remarks>
+        </member>
+        <member name="M:PPJoy.DeviceManager.BuildMapData(PPJoy.MappingCollection)">
+            <summary>
+            Converts a <see cref="T:PPJoy.MappingCollection"/> to an array of bytes 
+            that can be passed into PPJoy's IOCTL interface in a 
+            "Set Mapping" operation.
+            </summary>
+            <param name="mappings">A populated <see cref="T:PPJoy.MappingCollection"/>
+            containing a complete set of <see cref="T:PPJoy.Mapping"/>s to convert 
+            to raw bytes.</param>
+            <returns>an array of bytes that can be passed to PPJoy's IOCTL 
+            interface in a "Set Mapping" operation.  This byte array is the PPJoy 
+            "native" equivalent of the <see cref="T:PPJoy.Mapping"/>s supplied in 
+            the <paramref name="mappings"/> argument.</returns>
+            <seealso cref="T:PPJoy.Mapping"/>
+            <seealso cref="T:PPJoy.MappingCollection"/>
+        </member>
+        <member name="M:PPJoy.DeviceManager.ReadMapData(PPJoy.JoystickMapPayload)">
+            <summary>
+            Parses the contents of a PPJoy IOCTL <see cref="T:PPJoy.JoystickMapPayload"/> 
+            structure, converting them to a managed
+            <see cref="T:PPJoy.MappingCollection"/>, which can be easily worked with
+            programmatically.
+            </summary>
+            <param name="mapData">A populated <see cref="T:PPJoy.JoystickMapPayload"/> structure,
+            typically obtained by calling PPJoy's IOCTL interface using
+            the "Get Mappings" message.</param>
+            <returns>A <see cref="T:PPJoy.MappingCollection"/> object, representing the <see cref="T:PPJoy.Mapping"/>s
+            contained in the supplied <see cref="T:PPJoy.JoystickMapPayload"/> structure.</returns>
+        </member>
+        <member name="M:PPJoy.DeviceManager.GetEnumSubtype(PPJoy.JoystickTypes,System.Byte)">
+            <summary>
+            Returns a value from the <see cref="T:PPJoy.JoystickSubTypes"/>  enumeration 
+            that correpsonds to a given PPJoy IOCTL "subtype" byte,
+            as returned from certain calls to the PPJoy IOCTL interface.
+            In addition to the SubType byte, a value from the <see cref="T:PPJoy.JoystickTypes"/>
+            enumeration is required, in order to uniquely qualify the 
+            value to return from the <see cref="T:PPJoy.JoystickSubTypes"/> enumeration.
+            </summary>
+            <param name="joystickType">A value from the <see cref="T:PPJoy.JoystickTypes"/> enumeration,
+            indicating the type of joystick to which the subtype byte applies.</param>
+            <param name="nativeSubType">A byte containing the <see cref="T:PPJoy.Device"/>'s "subtype",
+            as returned from certain calls to PPJoy's IOCTL interface.</param>
+            <returns>A value from the <see cref="T:PPJoy.JoystickSubTypes"/> enumeration 
+            that correpsonds to the specified PPJoy IOCTL "subtype" byte
+            and specified value from the <see cref="T:PPJoy.JoystickTypes"/> enumeration.</returns>
+        </member>
+        <member name="M:PPJoy.DeviceManager.GetPassableSubtype(PPJoy.JoystickSubTypes)">
+            <summary>
+            Converts a value from the <see cref="T:PPJoy.JoystickSubTypes"/> 
+            enumeration to a similar value that is required 
+            when making certain calls to PPJoy's IOCTL 
+            interface. 
+            </summary>
+            <param name="subType">a value from the <see cref="T:PPJoy.JoystickSubTypes"/> 
+            enumeration, whose corresponding "passable" value 
+            (as expected by PPJoy's IOCTL interface)
+            will be returned.</param>
+            <returns>a byte containing the value expected by PPJoy's 
+            IOCTL interface, which corresponds to the value passed in the <paramref name="subType"/> 
+            parameter.</returns>
+            <remarks><b>Note:</b> The value from the <see cref="T:PPJoy.JoystickSubTypes"/> 
+            enumeration is not the same as the value that
+            is expected by PPJoy; hence, the need for this method.</remarks>
+        </member>
+        <member name="M:PPJoy.DeviceManager.GetDeviceInfoFromDevice(PPJoy.Device)">
+            <summary>
+            Gets a PPJoy IOCTL <see cref="T:PPJoy.DeviceInfo"/> structure from a <see cref="T:PPJoy.Device"/> object.
+            </summary>
+            <param name="device">a <see cref="T:PPJoy.Device"/> object to return a PPJoy IOCTL <see cref="T:PPJoy.DeviceInfo"/> structure from.</param>
+            <returns>a PPJoy IOCTL <see cref="T:PPJoy.DeviceInfo"/> structure, populated from the supplied <see cref="T:PPJoy.Device"/> object.</returns>
+        </member>
+        <member name="M:PPJoy.DeviceManager.GetDeviceFromDeviceInfo(PPJoy.DeviceInfo)">
+            <summary>
+            Creates a <see cref="T:PPJoy.Device"/> object from a PPJoy IOCTL <see cref="T:PPJoy.DeviceInfo"/> structure.
+            </summary>
+            <param name="deviceInfo">a populated PPJoy IOCTL <see cref="T:PPJoy.DeviceInfo"/> structure.</param>
+            <returns>a <see cref="T:PPJoy.Device"/> object, initialized with the values from the supplied <see cref="T:PPJoy.DeviceInfo"/> structure.</returns>
+        </member>
+        <member name="P:PPJoy.DeviceManager.IdealMappings">
+            <summary>
+            Gets a custom <see cref="T:PPJoy.MappingCollection"/> that defines
+            the broadest possible set of controls that can 
+            be assigned to a PPJoy <see cref="T:PPJoy.Device"/>.  The controls are
+            pre-set to expose the maximum capabilities that a
+            virtual joystick <see cref="T:PPJoy.Device"/> can express.
+            </summary>
+            <remarks>
+            The <see cref="T:PPJoy.MappingCollection"/> that will be returned will 
+            define a control set that includes 8 axes, 32 buttons, and 2 POVs.
+            <para/>Each <see cref="T:PPJoy.ButtonMapping"/> will have 
+            its <see cref="P:PPJoy.ButtonMapping.DataSource"/> property pre-set to
+            a <see cref="T:PPJoy.ButtonDataSources">ButtonDataSource</see> that 
+            corresponds with the <see cref="T:PPJoy.ButtonMapping"/>'s 
+            <see cref="P:PPJoy.Mapping.ControlNumber">ControlNumber</see> property 
+            value, such that the #1 button in the collection will source 
+            its data from <see cref="F:PPJoy.ButtonDataSources.Digital0"/>; 
+            the #2 button will source its data 
+            from <see cref="F:PPJoy.ButtonDataSources.Digital1"/>; and
+            so on.
+            <para/>Each <see cref="T:PPJoy.PovMapping"/> will be 
+            a <see cref="T:PPJoy.ContinuousPovMapping"/>, and will
+            have its <see cref="P:PPJoy.ContinuousPovMapping.DataSource"/> property set 
+            to <see cref="F:PPJoy.ContinuousPovDataSources.Analog8"/> for 
+            Pov #1, and <see cref="F:PPJoy.ContinuousPovDataSources.Analog9"/> 
+            for Pov #2.
+            <para/>
+            Each <see cref="T:PPJoy.AxisMapping"/> will have its 
+            <see cref="P:PPJoy.AxisMapping.MinDataSource"/> property set to
+            an <see cref="T:PPJoy.AxisDataSources">AxisDataSource</see> that 
+            corresponds with the <see cref="T:PPJoy.AxisMapping"/>'s 
+            <see cref="P:PPJoy.Mapping.ControlNumber">ControlNumber</see> property value, 
+            such that the #1 axis will source its data from 
+            <see cref="F:PPJoy.AxisDataSources.Analog0"/>; 
+            the #2 button will source its data 
+            from <see cref="F:PPJoy.AxisDataSources.Analog1"/>; and
+            so on.  Additionally, each <see cref="T:PPJoy.AxisMapping"/> will have 
+            its <see cref="P:PPJoy.AxisMapping.AxisType"/> 
+            property set to an <see cref="T:PPJoy.AxisTypes">AxisType</see> in such a way 
+            as to ensure that the defined <see cref="T:PPJoy.AxisMapping"/>s 
+            will include a member of each of the 
+            following <see cref="T:PPJoy.AxisTypes"/>:
+            <list type="bullet">
+            <item><see cref="F:PPJoy.AxisTypes.X"/></item> 
+            <item><see cref="F:PPJoy.AxisTypes.Y"/></item> 
+            <item><see cref="F:PPJoy.AxisTypes.Z"/></item> 
+            <item><see cref="F:PPJoy.AxisTypes.XRotation"/></item> 
+            <item><see cref="F:PPJoy.AxisTypes.YRotation"/></item> 
+            <item><see cref="F:PPJoy.AxisTypes.ZRotation"/></item> 
+            <item><see cref="F:PPJoy.AxisTypes.Slider"/> - #1</item> 
+            <item><see cref="F:PPJoy.AxisTypes.Slider"/> - #2</item> 
+            </list>
+            </remarks>
+            <returns>A fully-loaded <see cref="T:PPJoy.MappingCollection"/> object 
+            that can be assigned to a <see cref="T:PPJoy.Device"/> using 
+            the <see cref="M:PPJoy.Device.SetMappings(PPJoy.MappingCollection)"/> 
+            method.</returns>
+            <seealso cref="T:PPJoy.Device"/>
+            <seealso cref="T:PPJoy.MappingCollection"/>
+            <seealso cref="T:PPJoy.Mapping"/>
+            <seealso cref="T:PPJoy.AxisTypes"/>
+            <seealso cref="T:PPJoy.AxisDataSources"/>
+            <seealso cref="T:PPJoy.AxisMapping"/>
+            <seealso cref="T:PPJoy.ButtonMapping"/>
+            <seealso cref="T:PPJoy.ButtonDataSources"/>
+            <seealso cref="T:PPJoy.PovMapping"/>
+            <seealso cref="T:PPJoy.ContinuousPovMapping"/>
+            <seealso cref="T:PPJoy.ContinuousPovDataSources"/>
+        </member>
+        <member name="T:PPJoy.DeviceNotFoundException">
+            <summary>
+            Represents an error that occurs when trying to obtain a reference to a PPJoy <see cref="T:PPJoy.Device"/> that does not exist.
+            </summary>
+        </member>
+        <member name="M:PPJoy.DeviceNotFoundException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:PPJoy.DeviceNotFoundException"/> class.
+            </summary>
+        </member>
+        <member name="M:PPJoy.DeviceNotFoundException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:PPJoy.DeviceNotFoundException"/> class.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+        </member>
+        <member name="M:PPJoy.DeviceNotFoundException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:PPJoy.DeviceNotFoundException"/> class.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+            <param name="inner">The exception that is the cause of the current exception, or <see langword="null"/> if no inner exception is specified.</param>
+        </member>
+        <member name="M:PPJoy.DeviceNotFoundException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:PPJoy.DeviceNotFoundException"/> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the <see cref="T:System.Exception"/> being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
+        </member>
+        <member name="T:PPJoy.DirectionalPovMapping">
+             <summary>A <see cref="T:PPJoy.DirectionalPovMapping"/> object represents 
+             a specific type of Point-of-View (Pov) control that can 
+             be defined on a PPJoy joystick <see cref="T:PPJoy.Device"/>. 
+             A <see cref="T:PPJoy.DirectionalPovMapping"/> defines the Pov's
+             number (index) and the <see cref="T:PPJoy.DirectionalPovDataSources"/>
+             that will provide the <see cref="T:PPJoy.DirectionalPovMapping"/>'s state values 
+             that it will report to Windows.
+             </summary>
+             <remarks>A <see cref="T:PPJoy.DirectionalPovMapping"/> sources its values from one or more 
+             Digital (or quasi-Digital) <see cref="T:PPJoy.DirectionalPovDataSources"/>.
+             <para/><i>Contrast this behavior with that of a <see cref="T:PPJoy.ContinuousPovMapping"/>,
+             which sources its values from a single Analog or Reversed <see cref="T:PPJoy.ContinuousPovDataSources">ContinuousPovDataSource</see>.</i>
+            </remarks>
+             <seealso cref="T:PPJoy.ContinuousPovDataSources"/>
+             <seealso cref="T:PPJoy.ContinuousPovMapping"/>
+             <seealso cref="T:PPJoy.DirectionalPovDataSources"/> 
+             <seealso cref="T:PPJoy.PovMapping"/>
+             <seealso cref="T:PPJoy.Device"/>
+        </member>
+        <member name="F:PPJoy.DirectionalPovMapping._northDataSource">
+            <summary>
+            The data source that will cause the NORTH direction to be reported
+            </summary>
+        </member>
+        <member name="F:PPJoy.DirectionalPovMapping._southDataSource">
+            <summary>
+            The data source that will cause the SOUTH direction to be reported
+            </summary>
+        </member>
+        <member name="F:PPJoy.DirectionalPovMapping._westDataSource">
+            <summary>
+            The data source that will cause the WEST direction to be reported
+            </summary>
+        </member>
+        <member name="F:PPJoy.DirectionalPovMapping._eastDataSource">
+            <summary>
+            The data source that will cause the EAST direction to be reported
+            </summary>
+        </member>
+        <member name="M:PPJoy.DirectionalPovMapping.#ctor">
+            <summary>
+            Creates a new <see cref="T:PPJoy.DirectionalPovMapping"/> object.
+            </summary>
+            <seealso cref="T:PPJoy.PovMapping"/>
+        </member>
+        <member name="M:PPJoy.DirectionalPovMapping.#ctor(System.Int32)">
+            <summary>
+            Creates a new <see cref="T:PPJoy.DirectionalPovMapping"/> object.
+            </summary>
+            <param name="controlNumber">The zero-based index of this <see cref="T:PPJoy.PovMapping"/>
+            in the collection of <see cref="T:PPJoy.PovMapping"/>s defined on the same PPJoy <see cref="T:PPJoy.Device"/>.  
+            For example, the first <see cref="T:PPJoy.PovMapping"/> in the collection 
+            will have a <paramref name="controlNumber"/> of 0,
+            the second <see cref="T:PPJoy.PovMapping"/> will have a 
+            <paramref name="controlNumber"/> of 1, and so forth.
+            </param>
+            <seealso cref="P:PPJoy.Mapping.ControlNumber"/>
+            <seealso cref="T:PPJoy.PovMapping"/>
+        </member>
+        <member name="P:PPJoy.DirectionalPovMapping.NorthDataSource">
+            <summary>
+            Gets/sets the <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see> 
+            that this <see cref="T:PPJoy.DirectionalPovMapping"/> will use to determine
+            that it should report to Windows that it is being pressed 
+            in the <b>North</b> direction.
+            </summary>
+            <remarks>
+            When this property is set to a <b>Digital </b> <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see>, 
+            then this <see cref="T:PPJoy.DirectionalPovMapping"/> will report a value of <b>pressed</b> in the <b>North</b> direction to Windows 
+            whenever the Digital <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSources</see>'s value is <see langword="true"/>.  Similarily,
+            a value of <b>centered</b> will be reported to Windows, whenever the Digital <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see>'s 
+            value is <see langword="false"/> (and no other direction is reporting <b>pressed</b>).
+            <para/>When this property is set to an <b>Analog-Max </b> <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see>, 
+            then this <see cref="T:PPJoy.DirectionalPovMapping"/> will report a value of <b>pressed</b>  in the <b>North</b> direction to Windows 
+            whenever the Analog <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see>'s value is at its <b>maximum</b> value.  
+            Similarily, this <see cref="T:PPJoy.DirectionalPovMapping"/> will report a value of <b>centered</b> to Windows whenever the 
+            Analog <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see>'s value is at 
+            any other value other than its <b>maximum</b> (and no other direction is reporting <b>pressed</b>).
+            <para/>When this property is set to an <b>Analog-Min </b> <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see>, 
+            then this <see cref="T:PPJoy.DirectionalPovMapping"/> will report a value of <b>pressed</b> in the <b>North</b> direction to Windows 
+            whenever the Analog <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see>'s value is at its <b>minimum</b>.  
+            Similarily, this <see cref="T:PPJoy.DirectionalPovMapping"/> will report 
+            a value of <b>centered</b> to Windows whenever the 
+            Analog <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see>'s 
+            value is at any other value other than its <b>minimum</b> (and
+            no other direction is reporting <b>pressed</b>).
+            </remarks>
+            <seealso cref="T:PPJoy.DirectionalPovDataSources"/>
+            <seealso cref="P:PPJoy.DirectionalPovMapping.NorthDataSource"/>
+            <seealso cref="P:PPJoy.DirectionalPovMapping.SouthDataSource"/>
+            <seealso cref="P:PPJoy.DirectionalPovMapping.EastDataSource"/>      
+        </member>
+        <member name="P:PPJoy.DirectionalPovMapping.SouthDataSource">
+            <summary>
+            Gets/sets the <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see> 
+            that this <see cref="T:PPJoy.DirectionalPovMapping"/> will use to determine
+            that it should report to Windows that it is being pressed 
+            in the <b>South</b> direction.
+            </summary>
+            <remarks>
+            When this property is set to a <b>Digital </b> <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see>, 
+            then this <see cref="T:PPJoy.DirectionalPovMapping"/> will report a value of <b>pressed</b> in the <b>South</b> direction to Windows 
+            whenever the Digital <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSources</see>'s value is <see langword="true"/>.  Similarily,
+            a value of <b>centered</b> will be reported to Windows, whenever the Digital <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see>'s 
+            value is <see langword="false"/> (and no other direction is reporting <b>pressed</b>).
+            <para/>When this property is set to an <b>Analog-Max </b> <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see>, 
+            then this <see cref="T:PPJoy.DirectionalPovMapping"/> will report a value of <b>pressed</b>  in the <b>South</b> direction to Windows 
+            whenever the Analog <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see>'s value is at its <b>maximum</b> value.  
+            Similarily, this <see cref="T:PPJoy.DirectionalPovMapping"/> will report a value of <b>centered</b> to Windows whenever the 
+            Analog <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see>'s value is at 
+            any other value other than its <b>maximum</b> (and no other direction is reporting <b>pressed</b>).
+            <para/>When this property is set to an <b>Analog-Min </b> <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see>, 
+            then this <see cref="T:PPJoy.DirectionalPovMapping"/> will report a value of <b>pressed</b> in the <b>South</b> direction to Windows 
+            whenever the Analog <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see>'s value is at its <b>minimum</b>.  
+            Similarily, this <see cref="T:PPJoy.DirectionalPovMapping"/> will report 
+            a value of <b>centered</b> to Windows whenever the 
+            Analog <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see>'s 
+            value is at any other value other than its <b>minimum</b> (and
+            no other direction is reporting <b>pressed</b>).
+            </remarks>
+            <seealso cref="T:PPJoy.DirectionalPovDataSources"/>
+            <seealso cref="P:PPJoy.DirectionalPovMapping.NorthDataSource"/>
+            <seealso cref="P:PPJoy.DirectionalPovMapping.WestDataSource"/>
+            <seealso cref="P:PPJoy.DirectionalPovMapping.EastDataSource"/>       
+        </member>
+        <member name="P:PPJoy.DirectionalPovMapping.WestDataSource">
+            <summary>
+            Gets/sets the <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see> 
+            that this <see cref="T:PPJoy.DirectionalPovMapping"/> will use to determine
+            that it should report to Windows that it is being pressed 
+            in the <b>West</b> direction.
+            </summary>
+            <remarks>
+            When this property is set to a <b>Digital </b> <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see>, 
+            then this <see cref="T:PPJoy.DirectionalPovMapping"/> will report a value of <b>pressed</b> in the <b>West</b> direction to Windows 
+            whenever the Digital <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSources</see>'s value is <see langword="true"/>.  Similarily,
+            a value of <b>centered</b> will be reported to Windows, whenever the Digital <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see>'s 
+            value is <see langword="false"/> (and no other direction is reporting <b>pressed</b>).
+            <para/>When this property is set to an <b>Analog-Max </b> <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see>, 
+            then this <see cref="T:PPJoy.DirectionalPovMapping"/> will report a value of <b>pressed</b>  in the <b>West</b> direction to Windows 
+            whenever the Analog <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see>'s value is at its <b>maximum</b> value.  
+            Similarily, this <see cref="T:PPJoy.DirectionalPovMapping"/> will report a value of <b>centered</b> to Windows whenever the 
+            Analog <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see>'s value is at 
+            any other value other than its <b>maximum</b> (and no other direction is reporting <b>pressed</b>).
+            <para/>When this property is set to an <b>Analog-Min </b> <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see>, 
+            then this <see cref="T:PPJoy.DirectionalPovMapping"/> will report a value of <b>pressed</b> in the <b>West</b> direction to Windows 
+            whenever the Analog <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see>'s value is at its <b>minimum</b>.  
+            Similarily, this <see cref="T:PPJoy.DirectionalPovMapping"/> will report 
+            a value of <b>centered</b> to Windows whenever the 
+            Analog <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see>'s 
+            value is at any other value other than its <b>minimum</b> (and
+            no other direction is reporting <b>pressed</b>).
+            </remarks>
+            <seealso cref="T:PPJoy.DirectionalPovDataSources"/>
+            <seealso cref="P:PPJoy.DirectionalPovMapping.NorthDataSource"/>
+            <seealso cref="P:PPJoy.DirectionalPovMapping.SouthDataSource"/>
+            <seealso cref="P:PPJoy.DirectionalPovMapping.EastDataSource"/>        
+        </member>
+        <member name="P:PPJoy.DirectionalPovMapping.EastDataSource">
+            <summary>
+            Gets/sets the <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see> 
+            that this <see cref="T:PPJoy.DirectionalPovMapping"/> will use to determine
+            that it should report to Windows that it is being pressed 
+            in the <b>East</b> direction.
+            </summary>
+            <remarks>
+            When this property is set to a <b>Digital </b> <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see>, 
+            then this <see cref="T:PPJoy.DirectionalPovMapping"/> will report a value of <b>pressed</b> in the <b>East</b> direction to Windows 
+            whenever the Digital <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSources</see>'s value is <see langword="true"/>.  Similarily,
+            a value of <b>centered</b> will be reported to Windows, whenever the Digital <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see>'s 
+            value is <see langword="false"/> (and no other direction is reporting <b>pressed</b>).
+            <para/>When this property is set to an <b>Analog-Max </b> <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see>, 
+            then this <see cref="T:PPJoy.DirectionalPovMapping"/> will report a value of <b>pressed</b>  in the <b>East</b> direction to Windows 
+            whenever the Analog <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see>'s value is at its <b>maximum</b> value.  
+            Similarily, this <see cref="T:PPJoy.DirectionalPovMapping"/> will report a value of <b>centered</b> to Windows whenever the 
+            Analog <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see>'s value is at 
+            any other value other than its <b>maximum</b> (and no other direction is reporting <b>pressed</b>).
+            <para/>When this property is set to an <b>Analog-Min </b> <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see>, 
+            then this <see cref="T:PPJoy.DirectionalPovMapping"/> will report a value of <b>pressed</b> in the <b>East</b> direction to Windows 
+            whenever the Analog <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see>'s value is at its <b>minimum</b>.  
+            Similarily, this <see cref="T:PPJoy.DirectionalPovMapping"/> will report 
+            a value of <b>centered</b> to Windows whenever the 
+            Analog <see cref="T:PPJoy.DirectionalPovDataSources">DirectionalPovDataSource</see>'s 
+            value is at any other value other than its <b>minimum</b> (and
+            no other direction is reporting <b>pressed</b>).
+            </remarks>
+            <seealso cref="T:PPJoy.DirectionalPovDataSources"/>
+            <seealso cref="P:PPJoy.DirectionalPovMapping.NorthDataSource"/>
+            <seealso cref="P:PPJoy.DirectionalPovMapping.SouthDataSource"/>
+            <seealso cref="P:PPJoy.DirectionalPovMapping.WestDataSource"/>              
+        </member>
+        <member name="T:PPJoy.JoystickTypes">
+            <summary>
+            <see cref="T:PPJoy.JoystickTypes"/> defines an enumeration of all possible PPJoy joystick types.  
+            A joystick type is a combination of controller type and interface type, as shown in the 
+            PPJoy Control Panel.
+            </summary>
+            <seealso cref="T:PPJoy.Device"/>
+        </member>
+        <member name="T:PPJoy.JoystickSubTypes">
+            <summary>
+            <see cref="T:PPJoy.JoystickSubTypes"/> defines an enumeration of all possible PPJoy joystick sub-types.
+            </summary>
+        </member>
+        <member name="T:PPJoy.ButtonDataSources">
+            <summary>
+            <see cref="T:PPJoy.ButtonDataSources"/> defines an enumeration of PPJoy data sources
+            that can be used with <see cref="T:PPJoy.ButtonMapping"/> objects.  
+            </summary>
+            <seealso cref="T:PPJoy.ButtonMapping"/>
+        </member>
+        <member name="T:PPJoy.DirectionalPovDataSources">
+            <summary>
+            <see cref="T:PPJoy.DirectionalPovDataSources"/> defines an enumeration
+            of PPJoy data sources that can be used with <see cref="T:PPJoy.DirectionalPovMapping"/> 
+            objects.
+            </summary>
+            <seealso cref="T:PPJoy.DirectionalPovMapping"/> 
+        </member>
+        <member name="T:PPJoy.ContinuousPovDataSources">
+            <summary>
+            <see cref="T:PPJoy.ContinuousPovDataSources"/> defines an enumeration of 
+            PPJoy data sources that can be used with <see cref="T:PPJoy.ContinuousPovMapping"/> 
+            objects.
+            </summary>
+            <seealso cref="T:PPJoy.ContinuousPovMapping"/> 
+        </member>
+        <member name="T:PPJoy.AxisDataSources">
+            <summary>
+            <see cref="T:PPJoy.AxisDataSources"/> defines an enumeration of PPJoy 
+            data sources that can be used with <see cref="T:PPJoy.AxisMapping"/>
+            objects.
+            </summary>
+            <seealso cref="T:PPJoy.AxisMapping"/>
+        </member>
+        <member name="T:PPJoy.AxisTypes">
+            <summary>
+            <see cref="T:PPJoy.AxisTypes"/> defines an enumeration of 
+            Windows axis types that can be reported to 
+            Windows by an <see cref="T:PPJoy.AxisMapping"/> defined on a PPJoy device.  The
+            <see cref="T:PPJoy.AxisTypes">AxisType</see> associated with an <see cref="T:PPJoy.AxisMapping"/> 
+            defines how the axis will be labelled by Windows.
+            </summary>
+            <seealso cref="T:PPJoy.AxisMapping"/>
+            <seealso cref="T:PPJoy.PovMapping"/>
+            <seealso cref="T:PPJoy.ContinuousPovMapping"/>
+            <seealso cref="T:PPJoy.DirectionalPovMapping"/>
+        </member>
+        <member name="T:PPJoy.JoystickMapScope">
+            <summary>
+            <see cref="T:PPJoy.JoystickMapScope"/> defines an enumeration of scopes 
+            to which a <see cref="T:PPJoy.MappingCollection"/> can be applied.
+            </summary>
+        </member>
+        <member name="F:PPJoy.JoystickMapScope.Interface">
+            <summary>
+            The <see cref="T:PPJoy.MappingCollection"/> applies to all 
+            devices on the same LPT number (i.e. all virtual
+            devices or all physical parallel-port devices on the same
+            LPT port).
+            </summary>
+        </member>
+        <member name="F:PPJoy.JoystickMapScope.Device">
+            <summary>
+            The <see cref="T:PPJoy.MappingCollection"/> applies only to the 
+            specific device it is assigned to.  All other
+            devices will either inherit their mappings 
+            from their interface (parent),
+            or will have their own mappings assigned to them,
+            or will use a default set of mappings.
+            </summary>
+        </member>
+        <member name="T:PPJoy.MappingCollection">
+            <summary>
+            A <see cref="T:PPJoy.MappingCollection"/> is a specialized collection 
+            that can store related <see cref="T:PPJoy.Mapping"/> objects together.  This provides for
+            ease of handling when many different <see cref="T:PPJoy.Mapping"/>s must
+            be manipulated as a group.
+            A <see cref="T:PPJoy.MappingCollection"/> exposes
+            several sub-collections, from which all <see cref="T:PPJoy.Mapping"/>s of a particular Type can be retrieved (for instance, all <see cref="T:PPJoy.ButtonMapping"/>s 
+            in the <see cref="T:PPJoy.MappingCollection"/> can be retrieved from the <see cref="P:PPJoy.MappingCollection.ButtonMappings"/> property.
+            </summary>
+        </member>
+        <member name="M:PPJoy.MappingCollection.#ctor">
+            <summary>
+            Creates a new <see cref="T:PPJoy.MappingCollection"/> object.
+            </summary>
+        </member>
+        <member name="M:PPJoy.MappingCollection.GetAllOfType(System.Type)">
+            <summary>
+            Returns all <see cref="T:PPJoy.Mapping"/>s from the <see cref="T:PPJoy.MappingCollection"/> that are of a specific <see cref="T:System.Type"/>.
+            </summary>
+            <param name="proto"><see cref="T:System.Type"/> of <see cref="T:PPJoy.Mapping"/> to return.  All <see cref="T:PPJoy.Mapping"/>s in the <see cref="T:PPJoy.MappingCollection"/> that are of this <see cref="T:System.Type"/> will be returned.</param>
+            <returns>A <see cref="T:PPJoy.MappingCollection"/> that is a subset of this <see cref="T:PPJoy.MappingCollection"/>, containing only <see cref="T:PPJoy.Mapping"/>s of the specified <see cref="T:System.Type"/>.</returns>
+        </member>
+        <member name="M:PPJoy.MappingCollection.Add(PPJoy.Mapping)">
+            <summary>
+            Adds a <see cref="T:PPJoy.Mapping"/> to the <see cref="T:PPJoy.MappingCollection"/>.
+            </summary>
+            <param name="value">A <see cref="T:PPJoy.Mapping"/> to add to the <see cref="T:PPJoy.MappingCollection"/>.</param>
+            <returns>The index at which the <see cref="T:PPJoy.Mapping"/> was added to the <see cref="T:PPJoy.MappingCollection"/>.</returns>
+        </member>
+        <member name="M:PPJoy.MappingCollection.Remove(PPJoy.Mapping)">
+            <summary>
+            Removes a <see cref="T:PPJoy.Mapping"/> from the <see cref="T:PPJoy.MappingCollection"/>.
+            </summary>
+            <param name="obj">A <see cref="T:PPJoy.Mapping"/> to remove from the <see cref="T:PPJoy.MappingCollection"/>.</param>
+        </member>
+        <member name="M:PPJoy.MappingCollection.Sort">
+            <summary>
+            Sorts the <see cref="T:PPJoy.MappingCollection"/>.
+            </summary>
+        </member>
+        <member name="M:PPJoy.MappingCollection.GetEnumerator">
+            <summary>
+            Gets an <see cref="T:System.Collections.IEnumerator"/> that can be used to iterate over the <see cref="T:PPJoy.MappingCollection"/>.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:PPJoy.MappingCollection.CopyTo(System.Array,System.Int32)">
+            <summary>
+            Copies the members of the <see cref="T:PPJoy.MappingCollection"/> to an array.
+            </summary>
+            <param name="array">An Array to copy the <see cref="T:PPJoy.MappingCollection"/>'s members to.</param>
+            <param name="index">The zero-based index into the array at which copying should begin at.</param>
+        </member>
+        <member name="M:PPJoy.MappingCollection.CopyTo(PPJoy.Mapping[],System.Int32)">
+            <summary>
+            Copies the members of the <see cref="T:PPJoy.MappingCollection"/> to an array.
+            </summary>
+            <param name="array">A strongly-typed Array (of type <see cref="T:PPJoy.Mapping"/>[]), to which
+            the <see cref="T:PPJoy.MappingCollection"/>'s members will be copied.</param>
+            <param name="index">The zero-based index into the array where copying should begin at.</param>
+        </member>
+        <member name="M:PPJoy.MappingCollection.Add(System.Object)">
+            <summary>
+            Adds a <see cref="T:System.Object"/> (referencing a <see cref="T:PPJoy.Mapping"/> object) to the <see cref="T:PPJoy.MappingCollection"/>.
+            </summary>
+            <param name="value">an <see cref="T:System.Object"/> (referencing a <see cref="T:PPJoy.Mapping"/> object) to add to the <see cref="T:PPJoy.MappingCollection"/>.</param>
+            <returns>The index of the <see cref="T:System.Object"/> in the <see cref="T:PPJoy.MappingCollection"/>.</returns>
+        </member>
+        <member name="M:PPJoy.MappingCollection.Clear">
+            <summary>
+            Removes all elements from the <see cref="T:PPJoy.MappingCollection"/>.
+            </summary>
+        </member>
+        <member name="M:PPJoy.MappingCollection.Contains(System.Object)">
+            <summary>
+            Determines whether an element is in the <see cref="T:PPJoy.MappingCollection"/>.
+            </summary>
+            <param name="value">The <see cref="T:System.Object"/> (referencing a <see cref="T:PPJoy.Mapping"/>) to locate in the <see cref="T:PPJoy.MappingCollection"/>. <paramref name="value"/> can be <see langword="null"/>.</param>
+            <returns><see langword="true"/> if the <see cref="T:PPJoy.MappingCollection"/> contains the specified <see cref="T:System.Object"/>, or <see langword="false"/> if it does not.</returns>
+        </member>
+        <member name="M:PPJoy.MappingCollection.Contains(PPJoy.Mapping)">
+            <summary>
+            Determines whether a specific <see cref="T:PPJoy.Mapping"/> is in the <see cref="T:PPJoy.MappingCollection"/>.
+            </summary>
+            <param name="value">The <see cref="T:PPJoy.Mapping"/> to locate in the <see cref="T:PPJoy.MappingCollection"/>. <paramref name="value"/> can be <see langword="null"/>.</param>
+            <returns><see langword="true"/> if the <see cref="T:PPJoy.MappingCollection"/> contains the specified <see cref="T:PPJoy.Mapping"/>, or <see langword="false"/> 
+            if it does not.</returns>
+        </member>
+        <member name="M:PPJoy.MappingCollection.IndexOf(System.Object)">
+            <summary>
+            Searches for the specified <see cref="T:System.Object"/> and returns the zero-based index of
+            the first occurence within the entire <see cref="T:PPJoy.MappingCollection"/>.
+            </summary>
+            <param name="value">The <see cref="T:System.Object"/> to locate in the <see cref="T:PPJoy.MappingCollection"/>.  <paramref name="value"/> can be <see langword="null"/>.</param>
+            <returns>The zero-based index of the first occurrence of <paramref name="value"/> 
+            within the entire <see cref="T:PPJoy.MappingCollection"/>, if found; otherwise, -1.</returns>
+        </member>
+        <member name="M:PPJoy.MappingCollection.IndexOf(PPJoy.Mapping)">
+            <summary>
+            Searches for the specified <see cref="T:PPJoy.Mapping"/> and returns the zero-based index of
+            the first occurence within the entire <see cref="T:PPJoy.MappingCollection"/>.
+            </summary>
+            <param name="value">The <see cref="T:PPJoy.Mapping"/> to locate in the <see cref="T:PPJoy.MappingCollection"/>.  <paramref name="value"/> can be <see langword="null"/>.</param>
+            <returns>The zero-based index of the first occurrence of <paramref name="value"/>
+            within the entire <see cref="T:PPJoy.MappingCollection"/>, if found; otherwise, -1.</returns>
+        </member>
+        <member name="M:PPJoy.MappingCollection.Insert(System.Int32,System.Object)">
+            <summary>
+            Inserts an element into the <see cref="T:PPJoy.MappingCollection"/> at the specified index.
+            </summary>
+            <param name="index">The zero-based index at which <paramref name="value"/> should be inserted.</param>
+            <param name="value">The <see cref="T:System.Object"/> to insert. <paramref name="value"/> can be <see langword="null"/>.</param>
+        </member>
+        <member name="M:PPJoy.MappingCollection.Insert(System.Int32,PPJoy.Mapping)">
+            <summary>
+            Inserts a <see cref="T:PPJoy.Mapping"/> into the <see cref="T:PPJoy.MappingCollection"/> at the specified index.
+            </summary>
+            <param name="index">The zero-based index at which <paramref name="value"/> should be inserted.</param>
+            <param name="value">The <see cref="T:PPJoy.Mapping"/> to insert.  <paramref name="value"/> can be <see langword="nll"/>.</param>
+        </member>
+        <member name="M:PPJoy.MappingCollection.Remove(System.Object)">
+            <summary>
+            Removes the first occurrence of a specific <see cref="T:System.Object"/> from the <see cref="T:PPJoy.MappingCollection"/>.
+            </summary>
+            <param name="value">The <see cref="T:System.Object"/> to remove from the <see cref="T:PPJoy.MappingCollection"/>.  <paramref name="value"/> can be <see langword="null"/>.</param>
+        </member>
+        <member name="M:PPJoy.MappingCollection.RemoveAt(System.Int32)">
+            <summary>
+            Removes the element at the specified index of the <see cref="T:PPJoy.MappingCollection"/>.
+            </summary>
+            <param name="index">The zero-based index of the element to remove.</param>
+        </member>
+        <member name="M:PPJoy.MappingCollection.Clone">
+            <summary>
+            Creates a shallow copy of the <see cref="T:PPJoy.MappingCollection"/>.
+            </summary>
+            <returns>A shallow copy of the <see cref="T:PPJoy.MappingCollection"/>.</returns>
+        </member>
+        <member name="P:PPJoy.MappingCollection.ButtonMappings">
+            <summary>
+            Gets a <see cref="T:PPJoy.MappingCollection"/> containing all the <see cref="T:PPJoy.ButtonMapping"/> objects contained in this <see cref="T:PPJoy.MappingCollection"/>.
+            </summary>
+        </member>
+        <member name="P:PPJoy.MappingCollection.PovMappings">
+            <summary>
+            Gets a <see cref="T:PPJoy.MappingCollection"/> containing all the <see cref="T:PPJoy.PovMapping"/>s contained in this <see cref="T:PPJoy.MappingCollection"/>.
+            </summary>
+        </member>
+        <member name="P:PPJoy.MappingCollection.AxisMappings">
+            <summary>
+            Gets a <see cref="T:PPJoy.MappingCollection"/> containing all the <see cref="T:PPJoy.AxisMapping"/>s contained in this <see cref="T:PPJoy.MappingCollection"/>.
+            </summary>
+        </member>
+        <member name="P:PPJoy.MappingCollection.Item(System.Int32)">
+            <summary>
+            Gets an item from the <see cref="T:PPJoy.MappingCollection"/>, given its index number.
+            </summary>
+            <param name="index">The zero-based index of the item to retrieve.</param>
+            <returns>The <see cref="T:PPJoy.Mapping"/> object corresponding to the given index in the <see cref="T:PPJoy.MappingCollection"/>.</returns>
+        </member>
+        <member name="P:PPJoy.MappingCollection.Count">
+            <summary>
+            Gets the number of <see cref="T:PPJoy.Mapping"/>s in the <see cref="T:PPJoy.MappingCollection"/>.
+            </summary>
+        </member>
+        <member name="P:PPJoy.MappingCollection.IsSynchronized">
+            <summary>
+            Gets a value indicating whether access to the <see cref="T:PPJoy.MappingCollection"/> is synchronized (thread safe).
+            </summary>
+        </member>
+        <member name="P:PPJoy.MappingCollection.SyncRoot">
+            <summary>
+            Gets an object that can be used to synchronize access to the <see cref="T:PPJoy.MappingCollection"/>.
+            </summary>
+        </member>
+        <member name="P:PPJoy.MappingCollection.IsFixedSize">
+            <summary>
+            Gets a value indicating whether the <see cref="T:PPJoy.MappingCollection"/> has a fixed size.
+            </summary>
+        </member>
+        <member name="P:PPJoy.MappingCollection.IsReadOnly">
+            <summary>
+            Gets a value indicating whether the <see cref="T:PPJoy.MappingCollection"/> is read-only.
+            </summary>
+        </member>
+        <member name="P:PPJoy.MappingCollection.System#Collections#IList#Item(System.Int32)">
+             <summary>
+                 Gets or sets the element at the specified index.
+            </summary>
+             <param name="index">The zero-based index of the element to get or set.</param>
+             <returns>The element at the specified index.</returns>
+             <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="index"/> is not a valid index in the <see cref="T:System.Collections.IList"/>.</exception>
+             <exception cref="T:System.NotSupportedException">The property is set and the <see cref="T:System.Collections.IList"/> is read-only.</exception>
+        </member>
+        <member name="T:PPJoy.MappingComparer">
+            <summary>
+            Compares two <see cref="T:PPJoy.Mapping"/>s for the purpose of sorting.
+            </summary>
+        </member>
+        <member name="M:PPJoy.MappingComparer.#ctor">
+            <summary>
+            Creates a new <see cref="T:PPJoy.MappingComparer"/> object.
+            </summary>
+        </member>
+        <member name="M:PPJoy.MappingComparer.Compare(PPJoy.Mapping,PPJoy.Mapping)">
+            <summary>
+             Performs a comparison of two <see cref="T:PPJoy.Mapping"/>s
+             and returns a value indicating whether one <see cref="T:PPJoy.Mapping"/> is "less
+              than", "equal to", or "greater than" the other for the purpose of
+              sorting.
+            </summary>
+             <param name="x">The first <see cref="T:PPJoy.Mapping"/> to compare.</param>
+             <param name="y">The second <see cref="T:PPJoy.Mapping"/> to compare.</param>
+             <returns>Value Condition:
+             Less than zero  -- x is less than y.
+             Zero -- x equals y.
+             Greater than zero -- x is greater than y.</returns>
+        </member>
+        <member name="T:PPJoy.OperationFailedException">
+            <summary>
+            Represents an error that occurs when performing a PPJoy IOCTL operation.
+            </summary>
+        </member>
+        <member name="M:PPJoy.OperationFailedException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:PPJoy.OperationFailedException"/> class.
+            </summary>
+        </member>
+        <member name="M:PPJoy.OperationFailedException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:PPJoy.OperationFailedException"/> class.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+        </member>
+        <member name="M:PPJoy.OperationFailedException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:PPJoy.OperationFailedException"/> class.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+            <param name="inner">The exception that is the cause of the current exception, or <see langword="null"/> if no inner exception is specified.</param>
+        </member>
+        <member name="M:PPJoy.OperationFailedException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:PPJoy.OperationFailedException"/> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the <see cref="T:System.Exception"/> being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
+        </member>
+        <member name="T:PPJoy.VirtualJoystick">
+            <summary>
+            A <see cref="T:PPJoy.VirtualJoystick"/> provides an easy-to-use interface for setting the PPJoy data source states for a single PPJoy Virtual Joystick <see cref="T:PPJoy.Device"/>.
+            </summary>
+        </member>
+        <member name="F:PPJoy.VirtualJoystick.PovCentered">
+            <summary>
+            The value that should be set on an analog data source when that data source is assigned to a <see cref="T:PPJoy.PovMapping"/> and when the <see cref="T:PPJoy.PovMapping"/> should be <b>centered</b>.
+            </summary>
+        </member>
+        <member name="F:PPJoy.VirtualJoystick.MinAnalogDataSourceVal">
+             <summary>
+            The minimum value that can be applied to an analog data source (except <see cref="F:PPJoy.VirtualJoystick.PovCentered"/>).
+             </summary>
+        </member>
+        <member name="F:PPJoy.VirtualJoystick.MaxAnalogDataSourceVal">
+             <summary>
+            The maximum value that can be applied to an analog data source.
+             </summary>
+        </member>
+        <member name="F:PPJoy.VirtualJoystick.MaxAnalogDataSources">
+             <summary>
+            The maximum number of analog data sources supported by PPJoy on a single <see cref="T:PPJoy.Device"/>.
+             </summary>
+        </member>
+        <member name="F:PPJoy.VirtualJoystick.MaxDigitalDataSources">
+             <summary>
+            The maximum number of digital data sources supported by PPJoy on a single <see cref="T:PPJoy.Device"/>.
+             </summary>            
+        </member>
+        <member name="F:PPJoy.VirtualJoystick.MaxVirtualDevices">
+             <summary>
+            The maximum number of virtual joystick <see cref="T:PPJoy.Device"/>s supported by PPJoy.
+             </summary>
+        </member>
+        <member name="F:PPJoy.VirtualJoystick.MaxVisibleButtons">
+             <summary>
+            The maximum number of buttons that can be created on a PPJoy virtual joystick <see cref="T:PPJoy.Device"/>.
+             </summary>
+        </member>
+        <member name="F:PPJoy.VirtualJoystick.MaxVisibleAxes">
+             <summary>
+            The maximum number of axes that can be created on a PPJoy virtual joystick <see cref="T:PPJoy.Device"/>.
+             </summary>
+        </member>
+        <member name="F:PPJoy.VirtualJoystick.MaxVisiblePovs">
+             <summary>
+            The maximum number of POVs that can be created on a PPJoy virtual joystick <see cref="T:PPJoy.Device"/>.
+             </summary>
+        </member>
+        <member name="M:PPJoy.VirtualJoystick.#ctor(System.Int32)">
+            <summary>
+            Constructs a new <see cref="T:PPJoy.VirtualJoystick"/> instance.
+            </summary>
+            <param name="virtualStickNumber">The one-based PPJoy virtual <see cfef="Device"/> number 
+            that will be managed by this <see cref="T:PPJoy.VirtualJoystick"/> instance.</param>
+        </member>
+        <member name="M:PPJoy.VirtualJoystick.#ctor">
+            <summary>
+            Creates a new <see cref="T:PPJoy.VirtualJoystick"/> instance. 
+            </summary>
+            <remarks>
+            If you use this "default" constructor, you will need to set 
+            the <see cref="P:PPJoy.VirtualJoystick.VirtualStickNumber"/>
+            property manually.  The default constructor is supplied so that non-.NET 
+            (COM) clients can use this wrapper class, since COM requires
+            classes to have a default constructor.  If you don't set 
+            the <see cref="P:PPJoy.VirtualJoystick.VirtualStickNumber"/> property manually,
+            the virtual stick number defaults to PPJoy Virtual Joystick #1.</remarks>
+        </member>
+        <member name="M:PPJoy.VirtualJoystick.SetAnalogDataSourceValue(System.Int32,System.Int32)">
+            <summary>
+            Sets an individual Analog data source value.  
+            </summary>
+            <param name="dataSourceNum">Zero-based index of the Analog data source to update.</param>
+            <param name="newValue">A value between 
+            <see cref="F:PPJoy.VirtualJoystick.MinAnalogDataSourceVal"/> and <see cref="F:PPJoy.VirtualJoystick.MaxAnalogDataSourceVal"/>, 
+            that will be assigned to the Analog data source.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown if the <paramref name="dataSourceNum"/> param &lt; 1 or &gt; <see cref="F:PPJoy.VirtualJoystick.MaxAnalogDataSources"/>; also thrown if the <paramref name="newValue"/> argument is &lt; <see cref="F:PPJoy.VirtualJoystick.MinAnalogDataSourceVal"/> or &gt; <see cref="F:PPJoy.VirtualJoystick.MaxAnalogDataSourceVal"/></exception>
+            <remarks>Axis data source values that are set by calling the <see cref="M:PPJoy.VirtualJoystick.SetAnalogDataSourceValue(System.Int32,System.Int32)"/> method 
+            do not get passed to PPJoy until the <see cref="M:PPJoy.VirtualJoystick.SendUpdates"/> method is called.  This
+            allows multiple data source value updates to be passed to the PPJoy driver in
+            a single pass.</remarks>
+        </member>
+        <member name="M:PPJoy.VirtualJoystick.SetDigitalDataSourceState(System.Int32,System.Boolean)">
+            <summary>
+            Sets an individual Digital data source state.  
+            </summary>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown if the <paramref name="dataSourceNum"/> argument &lt; 1 or &gt; <see cref="F:PPJoy.VirtualJoystick.MaxDigitalDataSources"/></exception>
+            <param name="dataSourceNum">Zero-based index of the digital data source to update.</param>
+            <param name="newValue">A new value to apply to the specified digital data source.</param>
+            <remarks>This value does not get passed to PPJoy until the 
+            <see cref="M:PPJoy.VirtualJoystick.SendUpdates"/> method gets called.  This
+            allows multiple digital data source state updates to be passed 
+            to the PPJoy driver in a single pass.</remarks>
+        </member>
+        <member name="M:PPJoy.VirtualJoystick.SendUpdates">
+            <summary>
+            Sends all pending updates to PPJoy.
+            </summary>
+        </member>
+        <member name="M:PPJoy.VirtualJoystick.SendUpdate(PPJoy.JoystickState)">
+            <summary>
+            Sends all pending updates to PPJoy using the IOCTL interface.
+            </summary>
+            <param name="JoyState">A populated <see cref="T:PPJoy.JoystickState"/> structure containing data to pass to PPJoy</param>
+        </member>
+        <member name="M:PPJoy.VirtualJoystick.GetFileHandle">
+            <summary>
+            Gets a handle to the PPJoy IOCTL interface for the virtual 
+            joystick device being managed by this instance.  
+            Overwrites any previous handles stored at the instance level.
+            </summary>
+            <returns>A managed <see cref="T:Microsoft.Win32.SafeHandles.SafeFileHandle"/> wrapper around a Win32 API handle.</returns>
+        </member>
+        <member name="M:PPJoy.VirtualJoystick.CloseFileHandle">
+            <summary>
+            Closes the current IOCTL file handle.
+            </summary>
+        </member>
+        <member name="M:PPJoy.VirtualJoystick.Finalize">
+            <summary>
+            Standard destructor
+            </summary>
+        </member>
+        <member name="M:PPJoy.VirtualJoystick.Dispose(System.Boolean)">
+            <summary>
+            Private implementation of the <see cref="M:System.IDisposable.Dispose"/> method.
+            </summary>
+            <param name="disposing"></param>
+        </member>
+        <member name="M:PPJoy.VirtualJoystick.Dispose">
+            <summary>
+            Public implementation of the <see cref="M:System.IDisposable.Dispose"/> method.
+            </summary>
+        </member>
+        <member name="P:PPJoy.VirtualJoystick.VirtualStickNumber">
+            <summary>
+            Gets/sets the PPJoy virtual <see cref="T:PPJoy.Device"/> number that this <see cref="T:PPJoy.VirtualJoystick"/> instance is managing. 
+            </summary>
+        </member>
+        <member name="T:PPJoy.NativeMethods">
+            <summary>
+            This class stores all "native" (Win32 API) methods that are called by
+            PPJoy, as well as relevant enums and structs required by those methods.
+            </summary>
+        </member>
+        <member name="F:PPJoy.NativeMethods.EFileAccess.GenericRead">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PPJoy.NativeMethods.EFileAccess.GenericWrite">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PPJoy.NativeMethods.EFileAccess.GenericExecute">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PPJoy.NativeMethods.EFileAccess.GenericAll">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PPJoy.NativeMethods.EFileShare.None">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PPJoy.NativeMethods.EFileShare.Read">
+            <summary>
+            Enables subsequent open operations on an object to request read access. 
+            Otherwise, other processes cannot open the object if they request read access. 
+            If this flag is not specified, but the object has been opened for read access, the function fails.
+            </summary>
+        </member>
+        <member name="F:PPJoy.NativeMethods.EFileShare.Write">
+            <summary>
+            Enables subsequent open operations on an object to request write access. 
+            Otherwise, other processes cannot open the object if they request write access. 
+            If this flag is not specified, but the object has been opened for write access, the function fails.
+            </summary>
+        </member>
+        <member name="F:PPJoy.NativeMethods.EFileShare.Delete">
+            <summary>
+            Enables subsequent open operations on an object to request delete access. 
+            Otherwise, other processes cannot open the object if they request delete access.
+            If this flag is not specified, but the object has been opened for delete access, the function fails.
+            </summary>
+        </member>
+        <member name="F:PPJoy.NativeMethods.ECreationDisposition.New">
+            <summary>
+            Creates a new file. The function fails if a specified file exists.
+            </summary>
+        </member>
+        <member name="F:PPJoy.NativeMethods.ECreationDisposition.CreateAlways">
+            <summary>
+            Creates a new file, always. 
+            If a file exists, the function overwrites the file, clears the existing attributes, combines the specified file attributes, 
+            and flags with FILE_ATTRIBUTE_ARCHIVE, but does not set the security descriptor that the SECURITY_ATTRIBUTES structure specifies.
+            </summary>
+        </member>
+        <member name="F:PPJoy.NativeMethods.ECreationDisposition.OpenExisting">
+            <summary>
+            Opens a file. The function fails if the file does not exist. 
+            </summary>
+        </member>
+        <member name="F:PPJoy.NativeMethods.ECreationDisposition.OpenAlways">
+            <summary>
+            Opens a file, always. 
+            If a file does not exist, the function creates a file as if dwCreationDisposition is CREATE_NEW.
+            </summary>
+        </member>
+        <member name="F:PPJoy.NativeMethods.ECreationDisposition.TruncateExisting">
+            <summary>
+            Opens a file and truncates it so that its size is 0 (zero) bytes. The function fails if the file does not exist.
+            The calling process must open the file with the GENERIC_WRITE access right. 
+            </summary>
+        </member>
+        <member name="T:PPJoy.DeviceCapabilitiesPrefixes">
+            <summary>
+            Enumeration of map prefixes for specific device capabilities/control types.
+            These byte values are used as signals within raw mapping data 
+            sent to/received from PPJoy.  They declare the presence of a control
+            of the specified type and are followed by a second byte that describes
+            further details of the control declaration.
+            </summary>
+        </member>
+        <member name="T:PPJoy.FileDevices">
+            <summary>
+            Enumeration of file device types (subset of NativeMethods.EFileDevice) that
+            can be referenced by native IOCTL calls.
+            </summary>
+        </member>
+        <member name="T:PPJoy.MessageVersions">
+            <summary>
+            Enumeration of message version signatures used by PPJoy in various message types
+            </summary>
+        </member>
+        <member name="T:PPJoy.JoystickState">
+            <summary>
+            Structure that gets passed over IOCTL interface to PPJOY to update the state
+            of analog and digital data sources that PPJoy virtual devices get their
+            data from.  Can also be returned by PPJoy in response to a GetState command.
+            </summary>
+        </member>
+        <member name="T:PPJoy.DeviceInfo">
+            <summary>
+            PPJoy IOCTL header that describes a specific PPJoy device.
+            </summary>
+        </member>
+        <member name="T:PPJoy.AddDeviceMessage">
+            <summary>
+            PPJoy IOCTL Header that is used to add a device to the system. 
+            Callers should fill all the fields of AddDeviceMessage 
+            except the PortAddress field. 
+            </summary>
+        </member>
+        <member name="T:PPJoy.RemoveDeviceMessage">
+            <summary>
+            PPJoy IOCTL header that specifies a joystick to delete. 
+            Callers should fill in the Size, JoyType, 
+            UnitNumber and LPTNumber fields in the JoyData DeviceInfo structure. 
+            Set all other fields to 0.
+            </summary>
+        </member>
+        <member name="T:PPJoy.EnumerateDevicesMessage">
+            <summary>
+            PPJoy IOCTL header that will enumerate all the joysticks currently defined
+            within PPJoy.
+            </summary>
+        </member>
+        <member name="T:PPJoy.JoystickMapPayload">
+            <summary>
+            PPJoy IOCTL structure that contains a payload for a map definition message.
+            </summary>
+        </member>
+        <member name="T:PPJoy.JoystickMapHeader">
+            <summary>
+            PPJoy IOCTL header that indicates a virtual joystick map data packet.
+            </summary>
+        </member>
+        <member name="T:PPJoy.Headers">
+            <summary>
+            Contains enums, structs, and methods for communicating with PPJoy's device drivers at a low level via P/Invoke.
+            </summary>
+        </member>
+        <member name="M:PPJoy.Headers.GetPPJoyDeviceIoCtlCode(System.UInt32)">
+            <summary>
+            Looks up the PPJOY IOCTL code for a given opcode (e.g. write)
+            </summary>
+            <param name="_index_">PPJOY opcode</param>
+            <returns>IOCTL code for PPJOY device type, using the buffered write method and ANY file access</returns>
+        </member>
+        <member name="M:PPJoy.Headers.GetPPJoyBusIoCtlCode(System.UInt32)">
+            <summary>
+            Looks up the PPJOY BUS IOCTL code for a given opcode (e.g. write)
+            </summary>
+            <param name="_index_">PPJOY bus opcode</param>
+            <returns>IOCTL code for PPJOY bus device type, using the buffered write method and ANY file access</returns>
+        </member>
+        <member name="T:PPJoy.Util">
+            <summary>
+            <see cref="T:PPJoy.Util"/> contains static utility methods that are used throughout the PPJoy wrapper
+            library.
+            </summary>
+        </member>
+        <member name="M:PPJoy.Util.RawDataToObject(System.Byte[]@,System.Type)">
+            <summary>
+            Converts a byte array to an object of a specific type.
+            </summary>
+            <param name="rawData">an array of Bytes to convert to an object of the specified <see cref="T:System.Type"/></param>
+            <param name="overlayType">A <see cref="T:System.Type"/>, to convert the supplied array of Bytes to</param>
+            <returns>A <see cref="T:System.Object"/> of the <see cref="T:System.Type"/> specified, as constructed from 
+            the supplied array of bytes.</returns>
+        </member>
+    </members>
+</doc>

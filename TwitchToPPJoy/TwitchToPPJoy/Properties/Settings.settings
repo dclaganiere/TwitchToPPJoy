@@ -1,0 +1,33 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="TwitchToPPJoy.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Username" Type="System.String" Scope="User">
+      <Value Profile="(Default)">username</Value>
+    </Setting>
+    <Setting Name="Password" Type="System.String" Scope="User">
+      <Value Profile="(Default)">oauth token</Value>
+    </Setting>
+    <Setting Name="Channel" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#channel</Value>
+    </Setting>
+    <Setting Name="Inputs" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;up 0&lt;/string&gt;
+  &lt;string&gt;down 1&lt;/string&gt;
+  &lt;string&gt;left 2&lt;/string&gt;
+  &lt;string&gt;right 3&lt;/string&gt;
+  &lt;string&gt;a 4&lt;/string&gt;
+  &lt;string&gt;b 5&lt;/string&gt;
+  &lt;string&gt;start 6&lt;/string&gt;
+  &lt;string&gt;select 7&lt;/string&gt;
+  &lt;string&gt;l 8&lt;/string&gt;
+  &lt;string&gt;r 9&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="Controller" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
