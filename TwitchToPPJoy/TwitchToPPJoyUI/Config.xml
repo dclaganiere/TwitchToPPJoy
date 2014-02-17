@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration Username="name" Password="oauth">
+  <TwitchGamepad Name="Twitch Plays Pokemon" Controller="1" PressLength="20">
+    <Channel>#twitchplayspokemon</Channel>
+    <Input Message="up" Value="0" />
+    <Input Message="down" Value="1" />
+    <Input Message="left" Value="2" />
+    <Input Message="right" Value="3" />
+    <Input Message="a" Value="4" />
+    <Input Message="b" Value="5" />
+    <Input Message="select" Value="6" />
+    <Input Message="start" Value="7" />
+  </TwitchGamepad>
+</Configuration>

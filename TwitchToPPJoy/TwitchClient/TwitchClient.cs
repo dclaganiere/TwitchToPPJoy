@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace TwitchClient
 {
-    public class TwitchIRCClient
+    public class TwitchIRCClient : IDisposable
     {
         private const string SERVER = "irc.twitch.tv";
         private const int PORT = 6667;
@@ -19,28 +21,51 @@ namespace TwitchClient
 
         private string username;
         private string password;
-        private string channel;
+        private List<string> channels;
 
         private TcpClient client;
+        private TextWriter writer;
 
-        private CancellationTokenSource tokenSource;
+        private Subject<string> messageStream;
+        private Subject<IrcMessage> ircMessageStream;
 
-        public TwitchIRCClient(string username, string password, string channel)
+        public TwitchIRCClient(string username, string password, List<string> channels)
         {
             this.username = username;
             this.password = password;
-            this.channel = channel;
+            this.channels = new List<string>();
+
+            this.channels.AddRange(channels);
 
         }
 
-        public delegate void MessageHandler(string username, string message);
-        public event MessageHandler OnMessageRecieved;
+        public IObservable<string> MessageStream
+        {
+            get
+            {
+                return this.messageStream.AsObservable();
+            }
+        }
+
+        public IObservable<IrcMessage> IrcMessageStream
+        {
+            get
+            {
+                return this.ircMessageStream;
+            }
+        }
+
+        public IEnumerable<string> Channels
+        {
+            get
+            {
+                return channels.AsReadOnly();
+            }
+        }
 
         public void ConnectAndListenForMessages()
         {
-            string buffer;
-
-            this.tokenSource = new CancellationTokenSource();
+            // Create a new client.
             this.client = new TcpClient();
 
             //Connect to irc server and get input and output text streams from TcpClient.
@@ -52,76 +77,105 @@ namespace TwitchClient
                 return;
             }
 
-            using (TextReader input = new StreamReader(client.GetStream()))
-            using (TextWriter output = new StreamWriter(client.GetStream()))
+            TextReader input = new StreamReader(client.GetStream());
+            writer = new StreamWriter(client.GetStream());
+
+
+            // Process each line received from irc server.
+            this.messageStream = new Subject<string>();
+            this.ircMessageStream = new Subject<IrcMessage>();
+
+            messageStream.Subscribe(HandleMessage);
+
+            Task.Run(() => GetMessages(input));
+
+
+            // Login to server.
+            this.LogIn();
+
+        }
+
+        private void GetMessages(TextReader reader)
+        {
+            string buffer;
+            while(true)
             {
+                buffer = reader.ReadLine();
+                messageStream.OnNext(buffer);
+            }
+        }
 
-                // Login to server.
-                output.Write("PASS {0}{1}", this.password, output.NewLine);
-                output.Write("NICK {0}{1}", this.username, output.NewLine);
-                output.Write("USER {0} 0 * :...{1}", this.username, output.NewLine);
-                output.Flush();
+        private void HandleMessage(string buffer)
+        {
+            // Send pong reply to any ping messages
+            if (buffer.StartsWith("PING "))
+            {
+                this.writer.Write(buffer.Replace("PING", "PONG") + this.writer.NewLine);
+                this.writer.Flush();
+                return;
+            }
 
-                // Process each line received from irc server.
-                while(!this.tokenSource.Token.IsCancellationRequested)
+            // All messages should start with ':'.
+            if (buffer[0] != ':')
+            {
+                return;
+            }
+
+            // After server sends 001 command, we can set mode to bot and join channels.
+            if (buffer.Split(DELIM)[1] == "001")
+            {
+                this.JoinChannels();
+            }
+
+            // Read in messages.
+            string[] data = buffer.Split(DELIM, 4);
+
+            if (data.Length == 4)
+            {
+                if (data[1] == "PRIVMSG")
                 {
-                    buffer = input.ReadLine();
+                    int nameLength = data[0].IndexOf('!') - 1;
 
-                    // Display received irc message
-                    //Console.WriteLine(buffer);
-
-                    // Send pong reply to any ping messages
-                    if (buffer.StartsWith("PING "))
+                    // This is used to ignore messages from jtv.
+                    if (nameLength < 1)
                     {
-                        output.Write(buffer.Replace("PING", "PONG") + output.NewLine);
-                        output.Flush();
+                        return;
                     }
 
-                    // All messages should start with ':'.
-                    if (buffer[0] != ':')
-                    {
-                        continue;
-                    }
+                    string channel = data[2];
+                    string username = data[0].Substring(1, nameLength);
+                    string message = data[3].Substring(1);
 
-                    // After server sends 001 command, we can set mode to bot and join a channel.
-                    if (buffer.Split(DELIM)[1] == "001")
-                    {
-                        output.Write("MODE {0} +B{2}JOIN {1}{2}", this.username, this.channel, output.NewLine);
-                        output.Flush();
-                    }
-
-                    // Read in messages.
-                    string[] data = buffer.Split(DELIM, 4);
-
-                    if (data.Length == 4)
-                    {
-                        if (data[1] == "PRIVMSG")
-                        {
-                            int nameLength = data[0].IndexOf('!') - 1;
-
-                            // This is used to ignore messages from jtv.
-                            if (nameLength == -1)
-                            {
-                                continue;
-                            }
-
-                            string user = data[0].Substring(1, nameLength);
-                            string message = data[3].Substring(1);
-
-                            OnMessageRecieved.Invoke(user, message);
-
-                        }
-                    }
+                    this.ircMessageStream.OnNext(new IrcMessage(channel, username, message));
                 }
             }
 
+            return;
         }
-        public void StopListening()
+
+        private void JoinChannels()
         {
-            if (this.tokenSource != null)
+            //this.writer.Write("MODE {0}{1}", this.username, this.writer.NewLine);
+
+            foreach(string channel in this.channels)
             {
-                this.tokenSource.Cancel();
+                this.writer.Write("JOIN {0}{1}", channel, this.writer.NewLine);
             }
+
+            this.writer.Flush();
+        }
+
+        private void LogIn()
+        {
+            this.writer.Write("PASS {0}{1}", this.password, this.writer.NewLine);
+            this.writer.Write("NICK {0}{1}", this.username, this.writer.NewLine);
+            this.writer.Write("USER {0} 0 * :...{1}", this.username, this.writer.NewLine);
+            this.writer.Flush();
+        }
+
+        public void Dispose()
+        {
+            this.writer.Dispose();
         }
     }
 }
